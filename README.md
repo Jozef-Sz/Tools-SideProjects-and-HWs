@@ -1,2 +1,2 @@
-# C-tools
-Tools for c, to make life easier.
+# Tools-SideProjects-and-HWs
+Repo for my tools, side projects and homeworks.

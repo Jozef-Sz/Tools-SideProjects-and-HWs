@@ -1,9 +1,9 @@
-Copyright (c) 2020 Jozef Szimeth
-
-StrLib is a library for the c programing language, which provide an abstraction layer for strings.
+# StrLib
+StrLib is a library for the c programing language, which provides an abstraction layer for strings.
 It makes strings easier to work with and brings them closer to higher level languages like C# and Java.
-This library's priority was make work with strings easier, so there may be some inefficiencies and in 
-case of inappropriate treatment of pointers and memory allocations there might be even memory leaks.
+This library's priority was make work with strings easier, so in favour of this priority there may be 
+some inefficiencies and in case of inappropriate treatment of pointers and memory allocations there 
+might be even memory leaks.
 Disclaimer, the last statement about memory is in the users responsibility to handle, not the maintainer's.
 
 Documentation:
