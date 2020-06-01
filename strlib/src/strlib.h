@@ -24,4 +24,6 @@ const char* substr_cp(string str, int from, int to);
 
 string substr(string str, int from, int to);
 
+int len(string str);
+
 #endif

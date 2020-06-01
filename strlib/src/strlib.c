@@ -62,3 +62,8 @@ const char* substr_cp(string str, int from, int to)
 {
 
 }
+
+int len(string str)
+{
+    return str.length;
+}
