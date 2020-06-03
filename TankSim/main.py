@@ -29,6 +29,17 @@ def is_ground(x, y):
     return False
 
 
+def compare(xmissile, xplayer, op):
+    if op == "greaterthan":
+        if xmissile > xplayer:
+            return True
+        return False
+    else:
+        if xmissile < xplayer:
+            return True
+        return False
+
+
 def create_screen_buffer(height, width):
     for row in range(height):
         screen_buffer.append([])
@@ -58,7 +69,7 @@ def insert_char(xpos, ypos, char):
 
 def init_game():
     t_player, t_pc = {
-        "x": 2, #randint(1, ARENA_LENGTH / 2 - 1),
+        "x": randint(1, ARENA_LENGTH / 2 - 1),
         "y": None
     }, {
         "x": randint(ARENA_LENGTH / 2, ARENA_LENGTH),
@@ -95,24 +106,34 @@ def create_projectile_trajectory(angle, velocity, player):
     This function cares about only calculating the trajectory 
     and retrieving the distance travelled by the projectile
     '''
-    is_hit = False
-    function_went_through_ground = False
-    for x in range(1, ARENA_LENGTH + 1):
+    start, end, step = None, None, None
+    rel_op = None
+
+    if cos(radians(angle)) > 0:
+        # creating trajectory from left to right
+        start, end, step = player["x"], ARENA_LENGTH + 1, 1
+        rel_op = "greaterthan"
+    else :
+        # creating trajecory from right to left
+        start, end, step = player["x"], 0, -1
+        rel_op = "lessthan"
+    
+    for x in range(start, end, step):
         y = shoot_function(x, angle, velocity, -player["x"], player["y"])
-        print(x, y)
+
         # Guard for the last layer of the ground and of the shooter
         if y == player["y"] and x == player["x"]:
             # Then this is the shooting player, skit it!
             continue
         elif is_ground(x, y):
             # Then it is the very bottom ground
-            if function_went_through_ground:
+            if compare(x, player["x"], rel_op):
+                xoffset = -1 if x > player["x"] else 1
                 hit_ycoord = y + 1
-                hit_xcoord = x - 1
+                hit_xcoord = x + xoffset
                 insert_char(hit_xcoord, hit_ycoord, "*")
                 return (hit_xcoord, hit_ycoord)
-            else:
-                function_went_through_ground = True
+            
             continue
         else:
             insert_char(x, y, ".")
@@ -120,21 +141,22 @@ def create_projectile_trajectory(angle, velocity, player):
 
 
 def human_turn(pos):
-    res = create_projectile_trajectory(45, 430, pos)
+    res = create_projectile_trajectory(45, 340, pos)
     print(res)
 
 
 def pc_turn(pos):
-    res = create_projectile_trajectory(45, 400, pos)
+    res = create_projectile_trajectory(140, 310, pos)
     print(res)
     pass
 
 
 def game(t_player, t_pc):
-    # human_turn(t_player)
+    human_turn(t_player)
     pc_turn(t_pc)
     render_game()
-    print(t_player["x"], t_player["y"])
+    print("H", t_player["x"], t_player["y"])
+    print("P", t_pc["x"], t_pc["y"])
     return 0
 
 
