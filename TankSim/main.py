@@ -1,6 +1,8 @@
 from os import system, name
 from math import tan, cos, radians
 from random import randint
+# NOISE MODULE is not a built in module. Must be installed via pip or other methods!
+from noise import pnoise1
 
 import time
 
@@ -18,6 +20,17 @@ def clear_screen():
         system("cls")
     else:
         system("clear")
+
+
+def remap(value, old_min, old_max, new_min, new_max):
+    '''
+    Maps a number value from an old range to a new 
+    range and returns new value between the new 
+    range, same function as in processing. 
+    '''
+    old_range = old_max - old_min
+    new_range = new_max - new_min
+    return (((value - old_min) * new_range) / old_range) + new_min
 
 
 def is_ground(x, y):
@@ -67,6 +80,22 @@ def insert_char(xpos, ypos, char):
     screen_buffer[y][x] = char
 
 
+def generate_terrain(max_height):
+    noise_seed = randint(0, 20)
+    # defines the roughness, smaller is smoother
+    increment = 0.1 
+    sample = []
+    for _ in range(ARENA_LENGTH):
+        sample.append(pnoise1(noise_seed, octaves=1))
+        noise_seed += increment
+    # print(sample)
+    min_val, max_val = min(sample), max(sample)
+    normalized_sample = map(
+        lambda x: round(remap(x, min_val, max_val, 1, max_height)), 
+        sample)
+    return list(normalized_sample)
+
+
 def init_game():
     t_player, t_pc = {
         "x": randint(1, ARENA_LENGTH / 2 - 1),
@@ -76,8 +105,17 @@ def init_game():
         "y": None
     }
 
-    for i in range(ARENA_LENGTH):
-        screen_buffer[ARENA_HEIGHT - 1][i] = GROUND_TILE
+    # Create flat ground
+    # for i in range(ARENA_LENGTH):
+    #     screen_buffer[ARENA_HEIGHT - 1][i] = GROUND_TILE
+
+    # Create proceduaral terrain
+    terrain = generate_terrain(5)
+
+    for col in range(ARENA_LENGTH):
+        offset = ARENA_HEIGHT - terrain[col]
+        for h in range(terrain[col]):
+            screen_buffer[h + offset][col] = GROUND_TILE
 
     t_player["y"] = drop_place(t_player["x"], "H")
     t_pc["y"]     = drop_place(t_pc["x"], "P")
@@ -93,6 +131,10 @@ def render_game():
 
 
 def shoot_function(x, angle, velocity, xoffset, yoffset):
+    '''
+    Equation of projectile motion. For more details see
+    https://en.wikipedia.org/wiki/Projectile_motion#Displacement
+    '''
     velocity /= 20  # Normalize velocity
     a = tan(radians(angle)) * (x + xoffset)
     b = G * ((x + xoffset)**2)
@@ -103,8 +145,10 @@ def shoot_function(x, angle, velocity, xoffset, yoffset):
 
 def create_projectile_trajectory(angle, velocity, player):
     '''
-    This function cares about only calculating the trajectory 
-    and retrieving the distance travelled by the projectile
+    This function cares only about calculating the trajectory 
+    and retrieving x y coords of the landed projectile. In case
+    the projectile landed outside of the arena, the function
+    returns -1
     '''
     start, end, step = None, None, None
     rel_op = None
