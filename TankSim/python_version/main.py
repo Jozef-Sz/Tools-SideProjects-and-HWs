@@ -9,7 +9,13 @@ import time
 
 ARENA_LENGTH = 80
 ARENA_HEIGHT = 20
+
 GROUND_TILE  = chr(0x2588)
+PROJECTILE_TILE = "*"
+PATH_TILE = "."
+PLAYER_TILE = "K"
+PC_TILE = "X"
+
 G = 9.81
 
 screen_buffer = []
@@ -117,13 +123,14 @@ def init_game():
         for h in range(terrain[col]):
             screen_buffer[h + offset][col] = GROUND_TILE
 
-    t_player["y"] = drop_place(t_player["x"], "H")
-    t_pc["y"]     = drop_place(t_pc["x"], "P")
+    t_player["y"] = drop_place(t_player["x"], PLAYER_TILE)
+    t_pc["y"]     = drop_place(t_pc["x"], PC_TILE)
 
     return (t_player, t_pc)
 
 
 def render_game():
+    clear_screen()
     print(" " + "".join(["_"] * ARENA_LENGTH))
     for row in screen_buffer:
         print("|" + "".join(row) + "|")
@@ -175,32 +182,53 @@ def create_projectile_trajectory(angle, velocity, player):
                 xoffset = -1 if x > player["x"] else 1
                 hit_ycoord = y + 1
                 hit_xcoord = x + xoffset
-                insert_char(hit_xcoord, hit_ycoord, "*")
+                insert_char(hit_xcoord, hit_ycoord, PROJECTILE_TILE)
                 return (hit_xcoord, hit_ycoord)
             
             continue
         else:
-            insert_char(x, y, ".")
+            insert_char(x, y, PATH_TILE)
     return -1
 
 
-def human_turn(pos):
-    res = create_projectile_trajectory(45, 340, pos)
-    print(res)
-
-
-def pc_turn(pos):
-    res = create_projectile_trajectory(140, 310, pos)
-    print(res)
+def clear_projectiles_trajectory():
     pass
 
 
+def human_turn(pos):
+    global turn
+    indent = "   "
+    print(f"\n{indent}PLAYER'S TURN ({PLAYER_TILE}) | TURN NO. {turn}")
+    angle = int(input(f"{indent}Angle (deg): "))
+    power = int(input(f"{indent}Power (m/s): "))
+
+    res = create_projectile_trajectory(angle, power, pos)
+    print(res)
+
+    turn += 1
+
+
+def pc_turn(pos):
+    global turn
+    indent = "   " + "".join([" "] * int(ARENA_LENGTH / 2))
+    print(f"\n{indent}PC'S TURN ({PC_TILE}) | TURN NO. {turn}")
+    angle = int(input(f"{indent}Angle (deg): "))
+    power = int(input(f"{indent}Power (m/s): "))
+
+    res = create_projectile_trajectory(140, 310, pos)
+    print(res)
+    turn += 1
+
+
 def game(t_player, t_pc):
-    human_turn(t_player)
-    pc_turn(t_pc)
     render_game()
-    print("H", t_player["x"], t_player["y"])
-    print("P", t_pc["x"], t_pc["y"])
+    while True:
+        human_turn(t_player)
+        render_game()
+        pc_turn(t_pc)
+        render_game()
+    # print("H", t_player["x"], t_player["y"])
+    # print("P", t_pc["x"], t_pc["y"])
     return 0
 
 
@@ -208,6 +236,7 @@ def main():
     create_screen_buffer(ARENA_HEIGHT, ARENA_LENGTH)
     t_player, t_pc = init_game()
     winner = game(t_player, t_pc)
+    print(winner)
 
 
 if __name__ == "__main__":
