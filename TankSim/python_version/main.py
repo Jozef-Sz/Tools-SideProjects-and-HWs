@@ -6,6 +6,14 @@ from noise import pnoise1
 
 import time
 
+'''
+TODO:
+    1) Recreate create_projectile_trajectory function, because
+      it has flaws in collision detection
+    2) Make sort of ai for pc 
+    3) Finish the gameloop
+'''
+
 
 ARENA_LENGTH = 80
 ARENA_HEIGHT = 20
@@ -108,7 +116,9 @@ def init_game():
         "y": None
     }, {
         "x": randint(ARENA_LENGTH / 2, ARENA_LENGTH),
-        "y": None
+        "y": None,
+        "angle": None,
+        "power": None
     }
 
     # Create flat ground
@@ -192,32 +202,58 @@ def create_projectile_trajectory(angle, velocity, player):
 
 
 def clear_projectiles_trajectory():
-    pass
+    for row in range(ARENA_HEIGHT):
+        for col in range(ARENA_LENGTH):
+            tile = screen_buffer[row][col]
+            if tile == PROJECTILE_TILE or tile == PATH_TILE:
+                screen_buffer[row][col] = " " 
 
 
 def human_turn(pos):
     global turn
+    clear_projectiles_trajectory()
+
     indent = "   "
     print(f"\n{indent}PLAYER'S TURN ({PLAYER_TILE}) | TURN NO. {turn}")
     angle = int(input(f"{indent}Angle (deg): "))
     power = int(input(f"{indent}Power (m/s): "))
 
-    res = create_projectile_trajectory(angle, power, pos)
-    print(res)
-
+    hit_point = create_projectile_trajectory(angle, power, pos)
+    
+    hit = None
+    if hit_point != -1:
+        hit = { "x": hit_point[0], "y": hit_point[1] }
+        print(f"{indent}Hit inside of area X: {hit['x']}, Y: {hit['y']}")
+    else:
+        hit = {"x": None, "y": None}
+        print(f"{indent}Hit outside of area...")
+        
+    time.sleep(2)
     turn += 1
 
 
 def pc_turn(pos):
     global turn
+    clear_projectiles_trajectory()
+
     indent = "   " + "".join([" "] * int(ARENA_LENGTH / 2))
     print(f"\n{indent}PC'S TURN ({PC_TILE}) | TURN NO. {turn}")
     angle = int(input(f"{indent}Angle (deg): "))
     power = int(input(f"{indent}Power (m/s): "))
 
-    res = create_projectile_trajectory(140, 310, pos)
-    print(res)
+    hit_point = create_projectile_trajectory(angle, power, pos)
+    
+    hit = None
+    if hit_point != -1:
+        hit = { "x": hit_point[0], "y": hit_point[1] }
+        print(f"{indent}Hit inside of area X: {hit['x']}, Y: {hit['y']}")
+    else:
+        hit = {"x": None, "y": None}
+        print(f"{indent}Hit outside of area...")
+
+    time.sleep(2)
     turn += 1
+    return hit
 
 
 def game(t_player, t_pc):
@@ -227,8 +263,6 @@ def game(t_player, t_pc):
         render_game()
         pc_turn(t_pc)
         render_game()
-    # print("H", t_player["x"], t_player["y"])
-    # print("P", t_pc["x"], t_pc["y"])
     return 0
 
 
