@@ -8,10 +8,12 @@ import time
 
 '''
 TODO:
-    1) Recreate create_projectile_trajectory function, because
+    1) DONE Recreate create_projectile_trajectory function, because
       it has flaws in collision detection
-    2) Make sort of ai for pc 
-    3) Finish the gameloop
+    2) DONE Finish the gameloop
+    3) Make sort of ai for pc 
+    4) Health bar for each tank
+    5 ) Terrain damage
 '''
 
 
@@ -28,6 +30,9 @@ G = 9.81
 
 screen_buffer = []
 turn = 1
+ai_angle = randint(100, 160) 
+ai_power = randint(100, 500)
+
 
 def clear_screen():
     if name == "nt":
@@ -54,17 +59,6 @@ def is_ground(x, y):
         if screen_buffer[y][x] == GROUND_TILE:
             return True
     return False
-
-
-def compare(xmissile, xplayer, op):
-    if op == "greaterthan":
-        if xmissile > xplayer:
-            return True
-        return False
-    else:
-        if xmissile < xplayer:
-            return True
-        return False
 
 
 def create_screen_buffer(height, width):
@@ -102,7 +96,7 @@ def generate_terrain(max_height):
     for _ in range(ARENA_LENGTH):
         sample.append(pnoise1(noise_seed, octaves=1))
         noise_seed += increment
-    # print(sample)
+
     min_val, max_val = min(sample), max(sample)
     normalized_sample = map(
         lambda x: round(remap(x, min_val, max_val, 1, max_height)), 
@@ -116,11 +110,8 @@ def init_game():
         "y": None
     }, {
         "x": randint(ARENA_LENGTH / 2, ARENA_LENGTH),
-        "y": None,
-        "angle": None,
-        "power": None
+        "y": None
     }
-
     # Create flat ground
     # for i in range(ARENA_LENGTH):
     #     screen_buffer[ARENA_HEIGHT - 1][i] = GROUND_TILE
@@ -168,37 +159,34 @@ def create_projectile_trajectory(angle, velocity, player):
     returns -1
     '''
     start, end, step = None, None, None
-    rel_op = None
 
     if cos(radians(angle)) > 0:
         # creating trajectory from left to right
         start, end, step = player["x"], ARENA_LENGTH + 1, 1
-        rel_op = "greaterthan"
     else :
         # creating trajecory from right to left
         start, end, step = player["x"], 0, -1
-        rel_op = "lessthan"
-    
+
     for x in range(start, end, step):
         y = shoot_function(x, angle, velocity, -player["x"], player["y"])
-
-        # Guard for the last layer of the ground and of the shooter
         if y == player["y"] and x == player["x"]:
-            # Then this is the shooting player, skit it!
+            # Then this is the shooting player, skip it!
             continue
-        elif is_ground(x, y):
-            # Then it is the very bottom ground
-            if compare(x, player["x"], rel_op):
-                xoffset = -1 if x > player["x"] else 1
-                hit_ycoord = y + 1
-                hit_xcoord = x + xoffset
-                insert_char(hit_xcoord, hit_ycoord, PROJECTILE_TILE)
-                return (hit_xcoord, hit_ycoord)
-            
-            continue
+        elif is_ground(x, y) or y < 0:
+            xoffset = -1 if x > player["x"] else 1
+            y = y if y > 0 else 1
+            hit_point = climb_up(x, y)
+            insert_char(hit_point[0] + xoffset, hit_point[1], PROJECTILE_TILE)
+            return (hit_point[0] + xoffset, hit_point[1])
         else:
             insert_char(x, y, PATH_TILE)
     return -1
+
+
+def climb_up(x, y):
+    if not is_ground(x, y):
+        return (x, y)
+    return climb_up(x, y + 1)
 
 
 def clear_projectiles_trajectory():
@@ -207,6 +195,15 @@ def clear_projectiles_trajectory():
             tile = screen_buffer[row][col]
             if tile == PROJECTILE_TILE or tile == PATH_TILE:
                 screen_buffer[row][col] = " " 
+
+
+def adjust_parameters(angle, power, hit, target):
+    if hit == -1: return (angle-10, power - 100)
+    if hit[0] > target["x"]:
+        # We need to increase power 
+    else:
+        # Decrease power 
+        pass
 
 
 def human_turn(pos):
@@ -228,20 +225,25 @@ def human_turn(pos):
         hit = {"x": None, "y": None}
         print(f"{indent}Hit outside of area...")
         
-    time.sleep(2)
+    time.sleep(1)
     turn += 1
+    return hit
 
 
-def pc_turn(pos):
-    global turn
+def pc_turn(t_pc, target):
+    global turn, ai_angle, ai_power
     clear_projectiles_trajectory()
 
     indent = "   " + "".join([" "] * int(ARENA_LENGTH / 2))
     print(f"\n{indent}PC'S TURN ({PC_TILE}) | TURN NO. {turn}")
-    angle = int(input(f"{indent}Angle (deg): "))
-    power = int(input(f"{indent}Power (m/s): "))
+    print(f"{indent}Angle (deg): {ai_angle}")
+    print(f"{indent}Power (m/s): {ai_power}")
 
-    hit_point = create_projectile_trajectory(angle, power, pos)
+    hit_point = create_projectile_trajectory(ai_angle, ai_power, t_pc)
+
+    new_parameters = adjust_parameters(ai_angle, ai_power, hit_point, target)
+    ai_angle = new_parameters[0]
+    ai_power = new_parameters[1]
     
     hit = None
     if hit_point != -1:
@@ -251,26 +253,41 @@ def pc_turn(pos):
         hit = {"x": None, "y": None}
         print(f"{indent}Hit outside of area...")
 
-    time.sleep(2)
+    time.sleep(1)
     turn += 1
     return hit
+
+
+def print_winner(winner):
+    if winner == 0:
+        print(f"Tank {PLAYER_TILE} is the winner")
+    elif winner == 1:
+        print(f"Tank {PC_TILE} won, by suicide of the enemy")
+    elif winner == 2:
+        print(f"Tank {PC_TILE} is the winner")
+    else:
+        print(f"Tank {PLAYER_TILE} won, by suicide of the enemy")
 
 
 def game(t_player, t_pc):
     render_game()
     while True:
-        human_turn(t_player)
+        hit = human_turn(t_player)
         render_game()
-        pc_turn(t_pc)
+        if hit["x"] == t_pc["x"]: return 0
+        if hit["x"] == t_player["x"]: return 1
+
+        hit = pc_turn(t_pc, t_player)
         render_game()
-    return 0
+        if hit["x"] == t_player["x"]: return 2
+        if hit["x"] == t_pc["x"]: return 3
 
 
 def main():
     create_screen_buffer(ARENA_HEIGHT, ARENA_LENGTH)
     t_player, t_pc = init_game()
     winner = game(t_player, t_pc)
-    print(winner)
+    print_winner(winner)
 
 
 if __name__ == "__main__":
