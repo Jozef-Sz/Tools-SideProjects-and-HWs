@@ -15,6 +15,8 @@
 #define ARENA_HEIGHT 20
 #define PROJECTILE_TILE '*'
 #define PATH_TILE '.'
+#define PLAYER_TILE 'K'
+#define PC_TILE 'X'
 #define G 9.81
 
 typedef struct {
@@ -27,18 +29,73 @@ typedef struct {
 
 void clear_screen() { system(T_CMD); }
 
+int random_number(int min, int max)
+{
+    // Does includes max
+    return (rand() % (max + 1 - min)) + min;
+}
+
+void render_game(char sb[ARENA_HEIGHT][ARENA_LENGTH])
+{
+    clear_screen();
+    printf(" ");
+    for(int i = 0; i < ARENA_LENGTH; i++)
+        printf("_");
+    printf("\n");
+
+    for(int i = 0; i < ARENA_HEIGHT; i++)
+    {
+        printf("|");
+        for(int j = 0; j < ARENA_LENGTH; j++)
+            printf("%c",sb[i][j]);
+        printf("|\n");
+    }
+
+    for(int i = 0; i < ARENA_LENGTH + 2; i++)
+        printf("-");
+    printf("\n");
+}
+
+int drop_place(char sb[ARENA_HEIGHT][ARENA_LENGTH], int xpos, char tile)
+{
+    xpos -= 1;
+    for(int i = 0; i < ARENA_HEIGHT - 1; i++)
+    {
+        char peek_pixel = sb[i + 1][xpos];
+        if(peek_pixel == GROUND_TILE)
+            sb[i][xpos] = tile;
+            return ARENA_HEIGHT - i;
+    }
+}
+
 void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_pc)
 {
-    sb[0][1] = GROUND_TILE;
+    // Randomly position players
+    t_player->x = random_number(1, ARENA_LENGTH / 2 - 1);
+    t_pc->x = random_number(ARENA_LENGTH / 2, ARENA_LENGTH);
+    t_player->y = drop_place(sb, t_player->x, PLAYER_TILE);
+    t_pc->y = drop_place(sb, t_pc->x, PC_TILE);
+
+    // Initialize screen buffer
+    for(int i = 0; i < ARENA_HEIGHT; i++)
+        for(int j = 0; j < ARENA_LENGTH; j++)
+            sb[i][j] = ' ';
+
+    // Create flat ground
+    for(int i = 0; i < ARENA_LENGTH; i++)
+        sb[ARENA_HEIGHT - 1][i] = GROUND_TILE;
 }
 
 int main()
 {
     char screen_buffer[ARENA_HEIGHT][ARENA_LENGTH];   
     Entity t_player, t_pc;
+    srand((unsigned int)time(NULL));
 
     init_game(screen_buffer, &t_player, &t_pc);
-    printf("\n %c", screen_buffer[0][1]);
+    render_game(screen_buffer);
+
+    
 
     return 0;
 }

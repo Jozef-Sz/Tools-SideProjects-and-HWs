@@ -11,9 +11,9 @@ TODO:
     1) DONE Recreate create_projectile_trajectory function, because
       it has flaws in collision detection
     2) DONE Finish the gameloop
-    3) Make sort of ai for pc 
-    4) Health bar for each tank
-    5 ) Terrain damage
+    3) DONE Make sort of ai for pc 
+    4 ) Terrain damage
+    5) Health bar for each tank
 '''
 
 
@@ -69,6 +69,11 @@ def create_screen_buffer(height, width):
 
 
 def drop_place(xpos, char):
+    '''
+    This function is placing tiles based on only the x axis.
+    As the name suggests it is droping the tile while it 
+    does not reaches a ground tile and places it on top of the ground tile.
+    '''
     xpos -= 1
     if xpos < 0 or xpos > ARENA_LENGTH - 1: raise Exception("Invalid x position")
     for i in range(ARENA_HEIGHT - 1):
@@ -184,6 +189,10 @@ def create_projectile_trajectory(angle, velocity, player):
 
 
 def climb_up(x, y):
+    '''
+    Climb up is a small recursive function, which 
+    helps placing the projectile tile.
+    '''
     if not is_ground(x, y):
         return (x, y)
     return climb_up(x, y + 1)
@@ -198,12 +207,21 @@ def clear_projectiles_trajectory():
 
 
 def adjust_parameters(angle, power, hit, target):
+    '''
+    Basicaly a game ai, but it is terrible. I want to really
+    refactor this.
+    '''
     if hit == -1: return (angle-10, power - 100)
     if hit[0] > target["x"]:
-        # We need to increase power 
+        if randint(0, 100) < 50:
+            return (angle + 2, power)
+        else:
+            return (angle, power + 25)
     else:
-        # Decrease power 
-        pass
+        if randint(0, 100) < 50:
+            return (angle - 2, power)
+        else:
+            return (angle, power - 25)
 
 
 def human_turn(pos):
