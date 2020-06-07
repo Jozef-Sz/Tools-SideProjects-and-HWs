@@ -209,7 +209,8 @@ def clear_projectiles_trajectory():
 def adjust_parameters(angle, power, hit, target):
     '''
     Basicaly a game ai, but it is terrible. I want to really
-    refactor this.
+    refactor this. IDEA: try to count trajectory point 
+    to help optimize parameter
     '''
     if hit == -1: return (angle-10, power - 100)
     if hit[0] > target["x"]:

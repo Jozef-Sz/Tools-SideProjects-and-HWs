@@ -63,9 +63,21 @@ int drop_place(char sb[ARENA_HEIGHT][ARENA_LENGTH], int xpos, char tile)
     {
         char peek_pixel = sb[i + 1][xpos];
         if(peek_pixel == GROUND_TILE)
+        {
             sb[i][xpos] = tile;
             return ARENA_HEIGHT - i;
+        }
     }
+}
+
+void insert_char(char sb[ARENA_HEIGHT][ARENA_LENGTH], int xpos, int ypos, char tile)
+{
+    if (xpos < 0 || ypos < 0) return;
+    int x = xpos - 1;
+    int y = (ypos != 0) ? ARENA_HEIGHT - ypos : -1;
+    if ((x < 0 || x > ARENA_LENGTH - 1) || (y < 0 || y > ARENA_HEIGHT - 1))
+        return;
+    sb[y][x] = tile;
 }
 
 void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_pc)
@@ -73,8 +85,6 @@ void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_
     // Randomly position players
     t_player->x = random_number(1, ARENA_LENGTH / 2 - 1);
     t_pc->x = random_number(ARENA_LENGTH / 2, ARENA_LENGTH);
-    t_player->y = drop_place(sb, t_player->x, PLAYER_TILE);
-    t_pc->y = drop_place(sb, t_pc->x, PC_TILE);
 
     // Initialize screen buffer
     for(int i = 0; i < ARENA_HEIGHT; i++)
@@ -84,7 +94,16 @@ void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_
     // Create flat ground
     for(int i = 0; i < ARENA_LENGTH; i++)
         sb[ARENA_HEIGHT - 1][i] = GROUND_TILE;
+
+    t_player->y = drop_place(sb, t_player->x, PLAYER_TILE);
+    t_pc->y = drop_place(sb, t_pc->x, PC_TILE);
 }
+
+int human_turn() {}
+
+int pc_turn() {}
+
+int game() {}
 
 int main()
 {
