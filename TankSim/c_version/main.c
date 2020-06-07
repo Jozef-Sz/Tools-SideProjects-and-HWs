@@ -3,6 +3,10 @@
 #include <math.h>
 #include <time.h>
 
+// NOTE: for linux users gcc main.c -lm -o main
+
+// TODO: fine tune perlin noise terrain generation
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #define T_CMD "cls"
 #define GROUND_TILE 219
@@ -28,7 +32,7 @@ float slopes[SAMPLE_SIZE];
 void init_noise()
 {
     for(int i = 0; i < SAMPLE_SIZE; i++)
-        slopes[i] = (float)rand() / (float)(RAND_MAX + 1) * 2 - 1;
+        slopes[i] = (float)(rand() - 1) / (float)RAND_MAX * 2 - 1;
 }
 
 float noise(float x)
@@ -70,6 +74,7 @@ float max_val(float* pool, int pool_size)
     }
     return biggest;
 }
+// ------------------------------------------------------------
 
 
 typedef struct {
@@ -90,7 +95,7 @@ int random_number(int min, int max)
 
 void render_game(char sb[ARENA_HEIGHT][ARENA_LENGTH])
 {
-    clear_screen();
+    // clear_screen();
     printf(" ");
     for(int i = 0; i < ARENA_LENGTH; i++)
         printf("_");
@@ -133,6 +138,34 @@ void insert_tile(char sb[ARENA_HEIGHT][ARENA_LENGTH], int xpos, int ypos, char t
     sb[y][x] = tile;
 }
 
+void print_array(int* array, int size)
+{
+    for(int i = 0; i < size; i++)
+    {
+        printf("%d\n", array[i]);
+    }
+}
+
+int* generate_terrain(int max_height)
+{
+    float x = 0.01f;
+    float increment = 0.015;
+    float sample[ARENA_LENGTH];
+    for(int i = 0; i < ARENA_LENGTH; i++)
+    {
+        sample[i] = noise(x);
+        x += increment;
+    }
+    float min = min_val(sample, ARENA_LENGTH);
+    float max = max_val(sample, ARENA_LENGTH);
+    static int normalized_sample[ARENA_LENGTH];
+    for(int i = 0; i < ARENA_LENGTH; i++)
+    {
+        normalized_sample[i] = (int)map(sample[i], min, max, 1.0f, (float)max_height);
+    }
+    return normalized_sample;
+}
+
 void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_pc)
 {
     // Randomly position players
@@ -146,8 +179,20 @@ void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_
             sb[i][j] = ' ';
 
     // Create flat ground
+    // for(int i = 0; i < ARENA_LENGTH; i++)
+    //     sb[ARENA_HEIGHT - 1][i] = GROUND_TILE;
+
+    // Create proceduaral terrain
+    int* terrain = generate_terrain(5);
+    print_array(terrain, ARENA_LENGTH);
     for(int i = 0; i < ARENA_LENGTH; i++)
-        sb[ARENA_HEIGHT - 1][i] = GROUND_TILE;
+    {
+        int offset = ARENA_HEIGHT - terrain[i];
+        for(int j = 0; j < terrain[i]; j++)
+        {
+            sb[j + offset][i] = GROUND_TILE;
+        }
+    }
 
     t_player->y = drop_place(sb, t_player->x, PLAYER_TILE);
     t_pc->y = drop_place(sb, t_pc->x, PC_TILE);
