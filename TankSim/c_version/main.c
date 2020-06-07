@@ -19,6 +19,59 @@
 #define PC_TILE 'X'
 #define G 9.81
 
+
+// ----------------------- Perlin Noise -----------------------
+#define SAMPLE_SIZE 500
+
+float slopes[SAMPLE_SIZE];
+
+void init_noise()
+{
+    for(int i = 0; i < SAMPLE_SIZE; i++)
+        slopes[i] = (float)rand() / (float)(RAND_MAX + 1) * 2 - 1;
+}
+
+float noise(float x)
+{
+	float lo = floor(x);
+	float hi = lo + 1.0f;
+	float dist = x - lo;
+	float loSlope = slopes[(int)lo];
+	float hiSlope = slopes[(int)hi];
+	float loPos = loSlope * dist;
+	float hiPos = -hiSlope * (1.0f - dist);
+	float u = dist * dist * (3.0f - 2.0f * dist);
+	return (loPos*(1-u) + (hiPos*u));
+}
+
+float map(float value, float old_min, float old_max, float new_min, float new_max)
+{
+    float old_range = old_max - old_min;
+    float new_range = new_max - new_min;
+    return (value - old_min) * new_range / old_range + new_min;
+}
+
+float min_val(float* pool, int pool_size)
+{
+    float smallest = pool[0];
+    for(int i = 1; i < pool_size; i++)
+    {
+        if(pool[i] < smallest) smallest = pool[i];
+    }
+    return smallest;
+}
+
+float max_val(float* pool, int pool_size)
+{
+    float biggest = pool[0];
+    for(int i = 1; i < pool_size; i++)
+    {
+        if(pool[i] > biggest) biggest = pool[i];
+    }
+    return biggest;
+}
+
+
 typedef struct {
     int x;
     int y;
@@ -70,7 +123,7 @@ int drop_place(char sb[ARENA_HEIGHT][ARENA_LENGTH], int xpos, char tile)
     }
 }
 
-void insert_char(char sb[ARENA_HEIGHT][ARENA_LENGTH], int xpos, int ypos, char tile)
+void insert_tile(char sb[ARENA_HEIGHT][ARENA_LENGTH], int xpos, int ypos, char tile)
 {
     if (xpos < 0 || ypos < 0) return;
     int x = xpos - 1;
@@ -86,7 +139,8 @@ void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_
     t_player->x = random_number(1, ARENA_LENGTH / 2 - 1);
     t_pc->x = random_number(ARENA_LENGTH / 2, ARENA_LENGTH);
 
-    // Initialize screen buffer
+    // Initialize perlin noise and screen buffer
+    init_noise();
     for(int i = 0; i < ARENA_HEIGHT; i++)
         for(int j = 0; j < ARENA_LENGTH; j++)
             sb[i][j] = ' ';
@@ -113,8 +167,6 @@ int main()
 
     init_game(screen_buffer, &t_player, &t_pc);
     render_game(screen_buffer);
-
-    
 
     return 0;
 }
