@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -9,9 +11,11 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #define T_CMD "cls"
 #define GROUND_TILE 219
+#include <Windows.h>
 #else
 #define T_CMD "clear"
 #define GROUND_TILE 35
+#include <unistd.h>
 #endif
 
 #define ARENA_LENGTH 80
@@ -92,6 +96,17 @@ int random_number(int min, int max)
     return (rand() % (max + 1 - min)) + min;
 }
 
+int is_ground(char sb[ARENA_HEIGHT][ARENA_LENGTH], int x, int y)
+{
+    if(y > 0 && y < 21)
+    {
+        x -= 1;
+        y = ARENA_HEIGHT - y;
+        if (sb[y][x] == (char)GROUND_TILE) return 1;
+    }
+    return 0;
+}
+
 void render_game(char sb[ARENA_HEIGHT][ARENA_LENGTH])
 {
     clear_screen();
@@ -119,7 +134,7 @@ int drop_place(char sb[ARENA_HEIGHT][ARENA_LENGTH], int xpos, char tile)
     for(int i = 0; i < ARENA_HEIGHT - 1; i++)
     {
         char peek_pixel = sb[i + 1][xpos];
-        if(peek_pixel == GROUND_TILE)
+        if(peek_pixel == (char)GROUND_TILE)
         {
             sb[i][xpos] = tile;
             return ARENA_HEIGHT - i;
@@ -211,12 +226,143 @@ int shoot_function(int x, int angle, int velocity, int xoffset, int yoffset)
     return round(a - b) + yoffset;
 }
 
+int climb_up(char sb[ARENA_HEIGHT][ARENA_LENGTH], int x, int y)
+{
+    if (! is_ground(sb, x, y)) return y;
+    return climb_up(sb, x, y + 1);
+}
 
-int human_turn() {}
+Entity create_projectile_trajectory(char sb[ARENA_HEIGHT][ARENA_LENGTH], int angle, int velocity, Entity* player)
+{
+    Entity projectile;
+    int start, end, step;
 
-int pc_turn() {}
+    if (cos(deg2rad(angle)) > 0)
+    {
+        start = player->x;
+        end = ARENA_LENGTH + 1;
+        step = 1;
+    } else {
+        start = player->x;
+        end = 0;
+        step = -1;
+    }
 
-int game() {}
+    for(int x = start; x != end; x += step)
+    {
+        int y = shoot_function(x, angle, velocity, -player->x, player->y);
+        if (y == player->y && x == player->x) continue;
+        else if (is_ground(sb, x, y) || y < 0)
+        {
+            int xoffset = (x > player->x) ? -1 : 1;
+            y = ( y > 0) ? y : 1;
+            y = climb_up(sb, x, y);
+            insert_tile(sb, x+xoffset, y, PROJECTILE_TILE);
+            projectile.x = x + xoffset;
+            projectile.y = y;
+            return projectile;
+        } else {
+            insert_tile(sb, x, y, PATH_TILE);
+        }
+    }
+    projectile.x = -1;
+    return projectile;
+}
+
+void clear_projectiles_trajectory(char sb[ARENA_HEIGHT][ARENA_LENGTH])
+{
+    for(int row = 0; row < ARENA_HEIGHT; row++)
+    {
+        for(int col = 0; col < ARENA_LENGTH; col++)
+        {
+            if(sb[row][col] == (char)PROJECTILE_TILE || sb[row][col] == (char)PATH_TILE)
+            {
+                sb[row][col] = ' ';
+            }
+        }
+    }
+}
+
+int human_turn(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player) 
+{
+    clear_projectiles_trajectory(sb);
+    int angle, power;
+    const char* indent = "    ";
+    printf("\n%sPLAYER'S TURN (%c)\n", indent, PLAYER_TILE);
+    printf("%sAngle (deg): ", indent);
+    scanf("%d", &angle);
+    printf("%sPower (m/s): ", indent);
+    scanf("%d", &power);
+
+    Entity proj = create_projectile_trajectory(sb, angle, power, t_player);
+
+    if (proj.x != -1)
+    {
+        printf("%sHit inside of area X: %d, Y: %d", indent, proj.x, proj.y);
+    } else 
+    {
+        printf("%sHit outside of area...", indent);
+    }
+
+    Sleep(1000);
+    return proj.x;
+}
+
+int pc_turn(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_pc, Entity* target) 
+{
+    clear_projectiles_trajectory(sb);
+    int angle, power;
+    const char* indent = "                                            ";
+    printf("\n%sPC'S TURN (%c)\n", indent, PC_TILE);
+    printf("%sAngle (deg): ", indent);
+    scanf("%d", &angle);
+    printf("%sPower (m/s): ", indent);
+    scanf("%d", &power);
+
+    Entity proj = create_projectile_trajectory(sb, angle, power, t_pc);
+
+    if (proj.x != -1)
+    {
+        printf("%sHit inside of area X: %d, Y: %d", indent, proj.x, proj.y);
+    } else 
+    {
+        printf("%sHit outside of area...", indent);
+    }
+
+    // _sleep(1000);
+    Sleep(1000);
+    return proj.x;
+}
+
+int game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_pc) 
+{
+    render_game(sb);
+    int hit;
+    while(1)
+    {
+        hit = human_turn(sb, t_player);
+        render_game(sb);
+        if (hit == t_pc->x) return 0;
+        if (hit == t_player->x) return 1;
+
+        hit = pc_turn(sb, t_pc, t_player);
+        render_game(sb);
+        if (hit == t_player->x) return 2;
+        if (hit == t_pc->x) return 3;
+    }
+}
+
+void print_winner(int wn)
+{
+    if (wn == 0)
+        printf("\nTank %c is the winner", PLAYER_TILE);
+    else if (wn == 1)
+        printf("\nTank %c won, by suicide of the enemy", PC_TILE);
+    else if (wn == 2)
+        printf("\nTank %c is the winner", PC_TILE);
+    else
+        printf("\nTank %c won, by suicide of the enemy", PLAYER_TILE);
+}
 
 int main()
 {
@@ -225,7 +371,9 @@ int main()
     srand((unsigned int)time(NULL));
 
     init_game(screen_buffer, &t_player, &t_pc);
-    render_game(screen_buffer);
+    int winner = game(screen_buffer, &t_player, &t_pc);
+
+    print_winner(winner);
 
     return 0;
 }
