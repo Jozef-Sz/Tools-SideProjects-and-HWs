@@ -5,14 +5,13 @@
 
 // NOTE: for linux users gcc main.c -lm -o main
 
-// TODO: fine tune perlin noise terrain generation
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #define T_CMD "cls"
 #define GROUND_TILE 219
 #else
 #define T_CMD "clear"
-#define GROUND_TILE 'G'
+#define GROUND_TILE 35
 #endif
 
 #define ARENA_LENGTH 80
@@ -95,7 +94,7 @@ int random_number(int min, int max)
 
 void render_game(char sb[ARENA_HEIGHT][ARENA_LENGTH])
 {
-    // clear_screen();
+    clear_screen();
     printf(" ");
     for(int i = 0; i < ARENA_LENGTH; i++)
         printf("_");
@@ -148,8 +147,8 @@ void print_array(int* array, int size)
 
 int* generate_terrain(int max_height)
 {
-    float x = 0.01f;
-    float increment = 0.015;
+    float x = 0.0f;
+    float increment = 0.1f;
     float sample[ARENA_LENGTH];
     for(int i = 0; i < ARENA_LENGTH; i++)
     {
@@ -184,7 +183,6 @@ void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_
 
     // Create proceduaral terrain
     int* terrain = generate_terrain(5);
-    print_array(terrain, ARENA_LENGTH);
     for(int i = 0; i < ARENA_LENGTH; i++)
     {
         int offset = ARENA_HEIGHT - terrain[i];
@@ -197,6 +195,22 @@ void init_game(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player, Entity* t_
     t_player->y = drop_place(sb, t_player->x, PLAYER_TILE);
     t_pc->y = drop_place(sb, t_pc->x, PC_TILE);
 }
+
+double deg2rad(double deg)
+{
+    return deg * M_PI / 180;
+}
+
+int shoot_function(int x, int angle, int velocity, int xoffset, int yoffset)
+{
+    velocity /= 20;  // Normalize velocity
+    float a = tan(deg2rad(angle)) * (x + xoffset);
+    float b = G * pow(x + xoffset, 2);
+    float c = 2 * pow(velocity, 2) * pow(cos(deg2rad(angle)), 2);
+    b /= c;
+    return round(a - b) + yoffset;
+}
+
 
 int human_turn() {}
 
