@@ -12,10 +12,12 @@
 #define T_CMD "cls"
 #define GROUND_TILE 219
 #include <Windows.h>
+#define timeout(t) (Sleep(t*1000))
 #else
 #define T_CMD "clear"
 #define GROUND_TILE 35
 #include <unistd.h>
+#define timeout(t) (sleep(t))
 #endif
 
 #define ARENA_LENGTH 80
@@ -298,13 +300,13 @@ int human_turn(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_player)
 
     if (proj.x != -1)
     {
-        printf("%sHit inside of area X: %d, Y: %d", indent, proj.x, proj.y);
+        printf("%sHit inside of area X: %d, Y: %d\n", indent, proj.x, proj.y);
     } else 
     {
-        printf("%sHit outside of area...", indent);
+        printf("%sHit outside of area...\n", indent);
     }
 
-    Sleep(1000);
+    timeout(1);
     return proj.x;
 }
 
@@ -323,14 +325,13 @@ int pc_turn(char sb[ARENA_HEIGHT][ARENA_LENGTH], Entity* t_pc, Entity* target)
 
     if (proj.x != -1)
     {
-        printf("%sHit inside of area X: %d, Y: %d", indent, proj.x, proj.y);
+        printf("%sHit inside of area X: %d, Y: %d\n", indent, proj.x, proj.y);
     } else 
     {
-        printf("%sHit outside of area...", indent);
+        printf("%sHit outside of area...\n", indent);
     }
 
-    // _sleep(1000);
-    Sleep(1000);
+    timeout(1);
     return proj.x;
 }
 
