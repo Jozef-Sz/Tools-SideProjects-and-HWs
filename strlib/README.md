@@ -9,17 +9,26 @@ Disclaimer, the last statement about memory is in the users responsibility to ha
 ## Documentation:
 
 ### TYPES:
-* string - main type when using strings of strlib
+* string - main type when using strings of strlib, struct holding string data and metadata
 
 
 ### FUNCTIONS:
-* **str (const char* arg)**
-    return type {string} - Returns a string, which is created from the given text(necessary parameter).
-    usage(example): string varname = str("Hello, world!");
+```c
+string str(const char* arg)
+```
+Is used for crating strings, which represents and manipulates a sequence of characters
+* **arg** - any kind of text, which is turned into string type and then returned
 
-    strpush (string donkey, const char* tail) return type {string} - String concatination. Takes in two parameters base string and a text to be added.
-    usage(example): string new_string = strpush(old_string, " this is going to be at the end.");  
+```C
+string strpush(string base, const char* tail)
+```
+Is used for extending a string with raw text as "example" or with any const char* just like does the plus operator in other languages.
+* **base** - some string to be extended
+* **tail** - text to be extended with 
 
-    stradd () return type {string} - 
-
-    strget (string str) return type {const char*} - 
+```C
+string stradd(string base, string tail)
+```
+Is also used for extending string, but in this case with another string and returns a merged string
+* **base** - some string to be extended
+* **tail** - string to be extended with
