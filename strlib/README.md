@@ -6,15 +6,15 @@ some inefficiencies and in case of inappropriate treatment of pointers and memor
 might be even memory leaks.
 Disclaimer, the last statement about memory is in the users responsibility to handle, not the maintainer's.
 
-Documentation:
+## Documentation:
 
-TYPES:
-    string - is a typedef struct
-    usage(example): string varname; 
+### TYPES:
+* string - main type when using strings of strlib
 
 
-FUNCTIONS:
-    str ( const char* text ) return type {string} - Returns a string, which is created from the given text(necessary parameter).
+### FUNCTIONS:
+* **str (const char* arg)**
+    return type {string} - Returns a string, which is created from the given text(necessary parameter).
     usage(example): string varname = str("Hello, world!");
 
     strpush (string donkey, const char* tail) return type {string} - String concatination. Takes in two parameters base string and a text to be added.
