@@ -8,7 +8,7 @@ typedef struct {
 } string;
 
 
-void throw_error(const char* msg);
+void throw_error(const char* msg, ...);
 
 string str(const char* raw_s);
 
@@ -16,14 +16,14 @@ string strpush(string donkey, const char* tail);
 
 string stradd(string donkey, string tail);
 
-const char* strget(string str);
+const char* strget(string arg);
 
-char charat(string str, int index);
+char charat(string arg, int index);
 
-const char* substr_cp(string str, int from, int to);
+string substr(string arg, int from, int to);
 
-string substr(string str, int from, int to);
+int len(string arg);
 
-int len(string str);
+void strdel(string arg);
 
 #endif

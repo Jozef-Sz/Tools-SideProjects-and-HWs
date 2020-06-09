@@ -16,10 +16,11 @@ int main()
     printf("Here is our string: %s|\n", name.str);
     printf("%d\n", name.length);
 
-    // printf("%c\n", charat(name, -1));
-    printf("%c\n", charat(name, 15));
-    printf("%c\n", charat(name, 8));
+    printf("%s\n", name.str);
 
-    string is = substr(name, 5, 7);
+    strdel(name);
+
+    printf("%s", name.str);
+
     return 0;
 }

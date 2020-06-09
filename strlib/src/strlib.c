@@ -1,15 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "strlib.h"
 
 
-void throw_error(const char* msg)
+void throw_error(const char* msg, ...)
 {
+    va_list arg;
+    va_start(arg, msg);
+
     printf("\x1b[31;1m");
-    printf("\nError occurred: %s\n", msg);
+    printf("\nError occurred: ");
+    vfprintf(stdout, msg, arg);
     printf("\x1b[0m");
+    va_end(arg);
     exit(EXIT_FAILURE);
 }
 
@@ -35,35 +41,41 @@ string strpush(string donkey, const char* tail)
         new_str.capacity = new_str.length + 5;
         new_str.str = realloc(donkey.str, new_str.capacity);
         strcat(new_str.str, tail);
-    } else {
+    } else 
+    {
         new_str.length = donkey.length + (int)tail_len;
         strcat(new_str.str, tail);
     }
     return new_str;
 }
 
-const char* strget(string s)
+char charat(string arg, int index)
 {
-    return s.str;
+    if (index < 0 || index > arg.length - 1) throw_error("String index out of range\n");
+    return arg.str[index];
 }
 
-char charat(string str, int index)
+string substr(string arg, int from, int to)
 {
-    if (index < 0 || index > str.length - 1) throw_error("String index out of range");
-    return str.str[index];
+    if (from < 0 || from > arg.length - 1) throw_error("String index out of range\n");
+    if (to < 0 || to > arg.length - 1) throw_error("String index out of range\n");
+    if (from > to) throw_error("Cannot retrieve substring from index %d to index %d\n", from, to);
+    string ss;
+    ss.length = to - from + 1;
+    ss.capacity = ss.length + 5;
+    ss.str = malloc(sizeof(char) * ss.capacity);
+    int i = 0, ssindex = from;
+    for (; i < ss.length; i++)
+    {
+        ss.str[i] = arg.str[ssindex];
+        ssindex++;
+    }
+    ss.str[i] = '\0';
+    return ss;
 }
 
-string substr(string str, int from, int to)
-{
+void strdel(string arg) { free(arg.str); }
 
-}
+int len(string arg) { return arg.length; }
 
-const char* substr_cp(string str, int from, int to)
-{
-
-}
-
-int len(string str)
-{
-    return str.length;
-}
+const char* strget(string arg) { return arg.str; }
