@@ -11,20 +11,31 @@ typedef struct {
 	int* indexes;
 }finding;
 
-/* When I figure out how to print colored text to the console (properly),
-   then refactor throw_error and create a throw_warning function. Of couse
-   with yellow text color.*/
+/* TODO: Error and warning message color currently works properly on
+         unix based environments so windows support is needed*/
 void throw_error(const char* msg, ...)
 {
     va_list arg;
     va_start(arg, msg);
 
-    printf("\x1b[31;1m");
-    printf("\nError occurred: ");
+    printf("\n\x1b[31m");
+    printf("[ERROR]: ");
     vfprintf(stdout, msg, arg);
-    printf("\x1b[0m");
+    printf("\x1b[0m\n");
     va_end(arg);
     exit(EXIT_FAILURE);
+}
+
+void throw_warning(const char* msg, ...)
+{
+	va_list arg;
+	va_start(arg, msg);
+
+	printf("\n\x1b[33m");
+	printf("[WARNING]: ");
+	vfprintf()stdout, msg, arg;
+	printf("\x1b[0m\n");
+	va_end(arg);
 }
 
 string str(const char* raw_s)
@@ -68,15 +79,15 @@ void stradd(string base, string tail)
 char charat(string arg, int index)
 {
     if (index < 0 || index > *arg.length - 1)
-        throw_error("String index out of range\n");
+        throw_error("String index out of range");
     return arg.str[index];
 }
 
 string substr(string arg, int from, int to)
 {
-    if (from < 0 || from > *arg.length - 1) throw_error("String index out of range\n");
-    if (to < 0 || to > *arg.length - 1) throw_error("String index out of range\n");
-    if (from > to) throw_error("Cannot retrieve substring from index %d to index %d\n", from, to);
+    if (from < 0 || from > *arg.length - 1) throw_error("String index out of range");
+    if (to < 0 || to > *arg.length - 1) throw_error("String index out of range");
+    if (from > to) throw_error("Cannot retrieve substring from index %d to index %d", from, to);
     string subs;
     subs.length = malloc(sizeof(int));
     subs.capacity = malloc(sizeof(int));
@@ -151,7 +162,7 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
     finding res = search(arg.str, pattern);
     if (res.amount == 0) return;
     int replacements;
-    if ((void*)occurrences == NULL || (int)occurrences == 0 || (int)occurrences > res.amount)
+    if (occurrences == 0 || occurrences > res.amount)
         replacements = res.amount;
     else
         replacements = occurrences;
@@ -172,7 +183,18 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
     {
         int new_size = *arg.length - replacements * (int)strlen(pattern) + 
                        replacements * (int)strlen(filling);
-        printf("New size of the string: %d\n", new_size);
+		*arg.length = new_size;
+		*arg.capacity = new_size + (int)STR_BACKUP_SIZE;
+		const char* old_str = arg.str;
+		arg.str = malloc(*arg.capacity * sizeof(char));
+
+		int current_index = 0;
+		for (int i = 0; i < (int)strlen(old_str); i++)
+		{
+			
+		}
+
+		free(old_str);
     }
     
 }

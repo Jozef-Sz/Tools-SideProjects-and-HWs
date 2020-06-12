@@ -7,8 +7,10 @@ int main()
     printf("|%s|\n", strget(name));
     printf("Size of the string: %d\n", len(name));
 
-    replace(name, "szar", "senki", NULL);
+    replace(name, "szar", "senki", 1);
     printf("|%s|\n", strget(name));
+
+	char a = charat(name, 122);
 
     strdel(name);
     return 0;

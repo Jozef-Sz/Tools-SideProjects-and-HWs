@@ -2,6 +2,7 @@
 #define STRLIB_H
 
 #define STR_BACKUP_SIZE 10
+#define ALL 0
 
 typedef struct {
     char* str;
