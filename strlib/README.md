@@ -75,7 +75,7 @@ Frees up the memory of a particular string. CAUTION: the string variable a.k.a. 
 ```C
 void replace(string arg, const char* pattern, const char* filling, int occurrance)
 ```
-Is used for raplacing a section of the string. It replaces based on a pattern like "this is going to be replaced", but only if the string actualy contains the given pattern. Last parameter determines how meny occurrances should be replaced. If the parameter is NULL or 0, all of the occurrances going to be replaced.
+Is used for raplacing a section of the string. It replaces based on a pattern like "this is going to be replaced", but only if the string actualy contains the given pattern. Last parameter determines how many occurrances should be replaced. If the parameter is NULL or 0, all of the occurrances going to be replaced.
 * **arg** - any kind of string
 * **pattern** - portion of the string, which we want to replace (case sensitive)
 * **filling** - the replaced portion is going to be replaced with this

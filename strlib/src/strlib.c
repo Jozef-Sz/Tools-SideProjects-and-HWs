@@ -11,6 +11,9 @@ typedef struct {
 	int* indexes;
 }finding;
 
+/* When I figure out how to print colored text to the console (properly),
+   then refactor throw_error and create a throw_warning function. Of couse
+   with yellow text color.*/
 void throw_error(const char* msg, ...)
 {
     va_list arg;
@@ -145,7 +148,33 @@ int contains(string arg, const char* pattern)
 
 void replace(string arg, const char* pattern, const char* filling, int occurrences)
 {
-
+    finding res = search(arg.str, pattern);
+    if (res.amount == 0) return;
+    int replacements;
+    if ((void*)occurrences == NULL || (int)occurrences == 0 || (int)occurrences > res.amount)
+        replacements = res.amount;
+    else
+        replacements = occurrences;
+    
+    if (strlen(pattern) == strlen(filling))
+    {
+        for (int i = 0; i < replacements; i++)
+        {
+            int str_index = res.indexes[i];
+            for(int j = 0; j < (int)strlen(filling); j++)
+            {
+                arg.str[str_index] = filling[j];
+                str_index++;
+            }
+        }
+    }
+    else
+    {
+        int new_size = *arg.length - replacements * (int)strlen(pattern) + 
+                       replacements * (int)strlen(filling);
+        printf("New size of the string: %d\n", new_size);
+    }
+    
 }
 
 void strdel(string arg) 
