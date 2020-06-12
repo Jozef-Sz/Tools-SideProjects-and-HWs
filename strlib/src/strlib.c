@@ -6,6 +6,11 @@
 #include "strlib.h"
 
 
+typedef struct {
+	int amount;
+	int* indexes;
+}finding;
+
 void throw_error(const char* msg, ...)
 {
     va_list arg;
@@ -22,60 +27,134 @@ void throw_error(const char* msg, ...)
 string str(const char* raw_s)
 {
     string s;
-    s.length = (int)strlen(raw_s);
-    s.capacity = s.length + 5;
-    s.str = malloc(sizeof(char) * s.capacity);
-
+    s.length = malloc(sizeof(int));
+    s.capacity = malloc(sizeof(int));
+    *s.length = (int)strlen(raw_s);
+    *s.capacity = *s.length + (int)STR_BACKUP_SIZE;
+    s.str = malloc(*s.capacity * sizeof(char));
     strcpy(s.str, raw_s);
- 
     return s;
 }
 
-string strpush(string donkey, const char* tail)
+void strpush(string base, const char* tail)
 {
-    string new_str = donkey;
-    size_t tail_len = strlen(tail);
-    if (donkey.length + tail_len > donkey.capacity)
+    size_t tail_length = strlen(tail);
+    /* (*base.capacity - 1) is because of the null termiantion.
+       I am not sure, if it's necessary, anyway it doesn't 
+       hurts even if it's not necessary. */
+    if (*base.length + tail_length > *base.capacity - 1)
     {
-        new_str.length = donkey.length + (int)tail_len;
-        new_str.capacity = new_str.length + 5;
-        new_str.str = realloc(donkey.str, new_str.capacity);
-        strcat(new_str.str, tail);
-    } else 
+        *base.length = *base.length + (int)tail_length;
+        *base.capacity = *base.length + (int)STR_BACKUP_SIZE;
+        base.str = realloc(base.str, *base.capacity);
+        strcat(base.str, tail);
+    } 
+    else 
     {
-        new_str.length = donkey.length + (int)tail_len;
-        strcat(new_str.str, tail);
+        *base.length = *base.length + (int)tail_length;
+        strcat(base.str, tail);
     }
-    return new_str;
+}
+
+void stradd(string base, string tail)
+{
+    const char* str = tail.str;
+    strpush(base, str);
 }
 
 char charat(string arg, int index)
 {
-    if (index < 0 || index > arg.length - 1) throw_error("String index out of range\n");
+    if (index < 0 || index > *arg.length - 1)
+        throw_error("String index out of range\n");
     return arg.str[index];
 }
 
 string substr(string arg, int from, int to)
 {
-    if (from < 0 || from > arg.length - 1) throw_error("String index out of range\n");
-    if (to < 0 || to > arg.length - 1) throw_error("String index out of range\n");
+    if (from < 0 || from > *arg.length - 1) throw_error("String index out of range\n");
+    if (to < 0 || to > *arg.length - 1) throw_error("String index out of range\n");
     if (from > to) throw_error("Cannot retrieve substring from index %d to index %d\n", from, to);
-    string ss;
-    ss.length = to - from + 1;
-    ss.capacity = ss.length + 5;
-    ss.str = malloc(sizeof(char) * ss.capacity);
+    string subs;
+    subs.length = malloc(sizeof(int));
+    subs.capacity = malloc(sizeof(int));
+    *subs.length = to - from + 1;
+    *subs.capacity = *subs.length + (int)STR_BACKUP_SIZE;
+    subs.str = malloc(*subs.capacity * sizeof(char));
     int i = 0, ssindex = from;
-    for (; i < ss.length; i++)
+    for (; i < *subs.length; i++)
     {
-        ss.str[i] = arg.str[ssindex];
+        subs.str[i] = arg.str[ssindex];
         ssindex++;
     }
-    ss.str[i] = '\0';
-    return ss;
+    subs.str[i] = '\0';
+    return subs;
 }
 
-void strdel(string arg) { free(arg.str); }
+string strcopy(string arg)
+{
+    string copy;
+    copy.length = malloc(sizeof(int));
+    copy.capacity = malloc(sizeof(int));
+    *copy.length = *arg.length;
+    *copy.capacity = *arg.capacity;
+    copy.str = malloc(*copy.capacity * sizeof(char));
+    strcpy(copy.str, arg.str);
+    return copy;
+}
+/* Returns a structure, which consists of a number of occurrances
+   and an integer array of indexes where the found pattern begins. */
+finding search(const char* searchable, const char* pattern)
+{
+	finding res;
+	res.amount = 0;
+	res.indexes = malloc(sizeof(int));
+	int score = 0, pattern_len = (int)strlen(pattern);
 
-int len(string arg) { return arg.length; }
+	for (int i = 0; i < (int)strlen(searchable); i++)
+	{
+		if (searchable[i] == pattern[score])
+		{
+			score++;
+			if (score == pattern_len)
+			{
+				score = 0;
+				res.amount++;
+				if (res.amount == 1)
+					res.indexes[res.amount - 1] = i - pattern_len + 1;
+				else
+				{
+					res.indexes = realloc(res.indexes, res.amount * sizeof(int));
+					res.indexes[res.amount - 1] = i - pattern_len + 1; 
+				}
+			}
+		}
+		else
+		{
+			score = 0;
+		}
+	}
+	return res;
+}
+
+int contains(string arg, const char* pattern)
+{
+    finding res = search(arg.str, pattern);
+    if (res.amount == 0) return 0;
+    return 1;
+}
+
+void replace(string arg, const char* pattern, const char* filling, int occurrences)
+{
+
+}
+
+void strdel(string arg) 
+{ 
+    free(arg.str);
+    free(arg.length);
+    free(arg.capacity); 
+}
+
+int len(string arg) { return *arg.length; }
 
 const char* strget(string arg) { return arg.str; }

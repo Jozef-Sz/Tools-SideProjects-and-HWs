@@ -1,10 +1,12 @@
 #ifndef STRLIB_H
 #define STRLIB_H
 
+#define STR_BACKUP_SIZE 10
+
 typedef struct {
     char* str;
-    int length;
-    int capacity;
+    int* length;
+    int* capacity;
 } string;
 
 
@@ -12,9 +14,9 @@ void throw_error(const char* msg, ...);
 
 string str(const char* raw_s);
 
-string strpush(string donkey, const char* tail);
+void strpush(string base, const char* tail);
 
-string stradd(string donkey, string tail);
+void stradd(string base, string tail);
 
 const char* strget(string arg);
 
@@ -25,5 +27,11 @@ string substr(string arg, int from, int to);
 int len(string arg);
 
 void strdel(string arg);
+
+string strcopy(string arg);
+
+int contains(string arg, const char* pattern);
+
+void replace(string arg, const char* pattern, const char* filling, int occurrences);
 
 #endif
