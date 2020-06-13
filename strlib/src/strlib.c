@@ -5,14 +5,65 @@
 
 #include "strlib.h"
 
+// ------------------------ MESSAGE LOGGING SECTION ------------------------
+// ---------------------------------- AND ----------------------------------
+// -------------- COLOR HANDLING (FOR _WIN32 AND LINUX _TERM) -------------- 
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+#include <windows.h>
 
 typedef struct {
-	int amount;
-	int* indexes;
-}finding;
+    unsigned short bg;
+    unsigned short fg;
+} color_set;
 
-/* TODO: Error and warning message color currently works properly on
-         unix based environments so windows support is needed*/
+unsigned short encode_color(unsigned short bg, unsigned fg)
+{
+    if (bg > 15 || fg > 15) return;
+    return (16 * bg) + fg;
+}
+
+color_set decode_color(unsigned short color_c)
+{
+    color_set cs;
+    cs.bg = color_c / 16;
+    cs.fg = color_c - cs.bg * 16;
+    return cs;
+}
+
+void throw_error(const char* msg, ...)
+{
+    va_list arg;
+    va_start(arg, msg);
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+	WORD saved_attributes;
+
+	GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    saved_attributes = consoleInfo.wAttributes;
+
+    va_end(arg);
+    exit(EXIT_FAILURE);
+}
+
+void throw_warning(const char* msg, ...)
+{
+    va_list arg;
+	va_start(arg, msg);
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+	WORD saved_attributes;
+
+	GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    saved_attributes = consoleInfo.wAttributes;
+
+    va_end(arg);
+}
+
+#else
+
 void throw_error(const char* msg, ...)
 {
     va_list arg;
@@ -33,10 +84,20 @@ void throw_warning(const char* msg, ...)
 
 	printf("\n\x1b[33m");
 	printf("[WARNING]: ");
-	vfprintf()stdout, msg, arg;
+	vfprintf(stdout, msg, arg);
 	printf("\x1b[0m\n");
 	va_end(arg);
 }
+
+#endif
+
+// -------------------------------------------------------------------------
+// ----------------------------- STRLIB SECTION ----------------------------
+
+typedef struct {
+	int amount;
+	int* indexes;
+}finding;
 
 string str(const char* raw_s)
 {

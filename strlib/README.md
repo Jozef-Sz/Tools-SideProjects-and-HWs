@@ -79,7 +79,7 @@ Is used for raplacing a section of the string. It replaces based on a pattern li
 * **arg** - any kind of string
 * **pattern** - portion of the string, which we want to replace (case sensitive)
 * **filling** - the replaced portion is going to be replaced with this
-* **occurrance** - number of desired replacements, if NULL or 0 every occurance is replaced
+* **occurrance** - number of desired replacements, if ALL or 0 (they're the same, ALL is just a macro) every occurance is replaced
 
 ```C
 int contains(string arg, const char* pattern)
