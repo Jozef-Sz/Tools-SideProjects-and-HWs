@@ -88,10 +88,22 @@ Returns truthy value if the given pattern matches with a portion of the string, 
 * **arg** - any kind of string
 * **pattern** - searched substring (case sensitive)
 
+```C
+string parse_int(int number)
+```
+Returns string converted from an integer
+* **number** - integer number
+
+```C
+string parse_double(double number)
+```
+Returns string converted from a double
+* **number** - floating point number
+
 
 ## Upcoming features:
-* parse_int() - returns string converted from an integer
-* parse_double() - returns string convered from a double
+* int_tostring() - returns integer to string
+* double_tostring() - returns double to string
 * tolower() - returns string all lower case
 * toupper() - returns string all upper case
 * str_t() - creates a string from template just like printf does

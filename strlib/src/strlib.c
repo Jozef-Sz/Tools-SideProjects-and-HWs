@@ -219,9 +219,7 @@ finding search(const char* searchable, const char* pattern)
 			}
 		}
 		else
-		{
 			score = 0;
-		}
 	}
 	return res;
 }
@@ -238,8 +236,13 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
     finding res = search(arg.str, pattern);
     if (res.amount == 0) return;
     int replacements;
-    if (occurrences == 0 || occurrences > res.amount)
+    if (occurrences == 0)
         replacements = res.amount;
+    else if (occurrences > res.amount)
+    {
+        replacements = res.amount;
+        throw_warning("Too many occurances are given (%d), actual occurrances (%d)", occurrences, res.amount);
+    }
     else
         replacements = occurrences;
     
@@ -257,12 +260,13 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
     }
     else
     {
+        string copy = strcopy(arg);
         int new_size = *arg.length - replacements * (int)strlen(pattern) + 
                        replacements * (int)strlen(filling);
 		*arg.length = new_size;
 		*arg.capacity = new_size + (int)STR_BACKUP_SIZE;
-		char* old_str = arg.str;
-		arg.str = malloc(*arg.capacity * sizeof(char));
+		const char* old_str = copy.str;
+		arg.str = realloc(arg.str, *arg.capacity * sizeof(char));
 
 		int old_str_index = 0;
         int new_str_index = 0;
@@ -273,16 +277,13 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
             {
                 if (replaces_index < replacements)
                 {
-                    printf("Arrived to a replacement point at index of old string %d, which matches %d\n", old_str_index, res.indexes[replaces_index]);
                     for (int i = 0; i < (int)strlen(filling); i++)
                     {
-                        printf("Populating the filling at index %d with %c\n", new_str_index, filling[i]);
                         arg.str[new_str_index] = filling[i];
                         new_str_index++;
                     }
                     old_str_index += (int)strlen(pattern);
                     replaces_index++;
-                    printf("Finished replacement, old string index is now %d and replaces index incremented\n", old_str_index);
                 }
                 arg.str[new_str_index] = old_str[old_str_index];
                 old_str_index++;
@@ -290,16 +291,24 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
             }
             else 
             {
-                printf("Do not need to replace, just grab %c and put it to index %d\n", old_str[old_str_index], new_str_index);
                 arg.str[new_str_index] = old_str[old_str_index];
                 old_str_index++;
                 new_str_index++;
             }
         }
         arg.str[new_str_index] = '\0';
-        printf("Our fresh string: %s\n", arg.str);
-		// free(old_str);
+        strdel(copy);
     }
+}
+
+string parse_int(int number)
+{
+
+}
+
+string parse_double(double number)
+{
+
 }
 
 void strdel(string arg) 

@@ -55,4 +55,8 @@ int contains(string arg, const char* pattern);
 
 void replace(string arg, const char* pattern, const char* filling, int occurrences);
 
+string parse_int(int number);
+
+string parse_double(double number);
+
 #endif
