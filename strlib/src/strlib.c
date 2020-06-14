@@ -19,7 +19,6 @@ typedef struct {
 
 unsigned short encode_color(unsigned short bg, unsigned fg)
 {
-    if (bg > 15 || fg > 15) return;
     return (16 * bg) + fg;
 }
 
@@ -42,7 +41,15 @@ void throw_error(const char* msg, ...)
 
 	GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
     saved_attributes = consoleInfo.wAttributes;
+    color_set initial_color = decode_color(saved_attributes);
 
+    // Maybe change fg to LIGHT_RED if it's to dark or dim
+    SetConsoleTextAttribute(hConsole, encode_color(initial_color.bg, (unsigned short)RED));
+    printf("\n[ERROR]: ");
+    vfprintf(stdout, msg, arg);
+    printf("\n");
+
+    SetConsoleTextAttribute(hConsole, saved_attributes);
     va_end(arg);
     exit(EXIT_FAILURE);
 }
@@ -58,7 +65,15 @@ void throw_warning(const char* msg, ...)
 
 	GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
     saved_attributes = consoleInfo.wAttributes;
+    color_set initial_color = decode_color(saved_attributes);
 
+    // Maybe change fg to LIGHT_RED if it's to dark or dim
+    SetConsoleTextAttribute(hConsole, encode_color(initial_color.bg, (unsigned short)YELLOW));
+    printf("\n[WARNING]: ");
+    vfprintf(stdout, msg, arg);
+    printf("\n");
+
+    SetConsoleTextAttribute(hConsole, saved_attributes);
     va_end(arg);
 }
 
@@ -246,18 +261,45 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
                        replacements * (int)strlen(filling);
 		*arg.length = new_size;
 		*arg.capacity = new_size + (int)STR_BACKUP_SIZE;
-		const char* old_str = arg.str;
+		char* old_str = arg.str;
 		arg.str = malloc(*arg.capacity * sizeof(char));
 
-		int current_index = 0;
-		for (int i = 0; i < (int)strlen(old_str); i++)
-		{
-			
-		}
-
-		free(old_str);
+		int old_str_index = 0;
+        int new_str_index = 0;
+        int replaces_index = 0;
+        while (new_str_index < *arg.length)
+        {
+            if (old_str_index == res.indexes[replaces_index])
+            {
+                if (replaces_index < replacements)
+                {
+                    printf("Arrived to a replacement point at index of old string %d, which matches %d\n", old_str_index, res.indexes[replaces_index]);
+                    for (int i = 0; i < (int)strlen(filling); i++)
+                    {
+                        printf("Populating the filling at index %d with %c\n", new_str_index, filling[i]);
+                        arg.str[new_str_index] = filling[i];
+                        new_str_index++;
+                    }
+                    old_str_index += (int)strlen(pattern);
+                    replaces_index++;
+                    printf("Finished replacement, old string index is now %d and replaces index incremented\n", old_str_index);
+                }
+                arg.str[new_str_index] = old_str[old_str_index];
+                old_str_index++;
+                new_str_index++;
+            }
+            else 
+            {
+                printf("Do not need to replace, just grab %c and put it to index %d\n", old_str[old_str_index], new_str_index);
+                arg.str[new_str_index] = old_str[old_str_index];
+                old_str_index++;
+                new_str_index++;
+            }
+        }
+        arg.str[new_str_index] = '\0';
+        printf("Our fresh string: %s\n", arg.str);
+		// free(old_str);
     }
-    
 }
 
 void strdel(string arg) 

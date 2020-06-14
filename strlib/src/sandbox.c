@@ -7,9 +7,9 @@ int main()
     printf("|%s|\n", strget(name));
     printf("Size of the string: %d\n", len(name));
 
-    replace(name, "szar", "senki", 1);
+    replace(name, "szar", "sen", ALL);
     printf("|%s|\n", strget(name));
-
+    printf("Size of the string: %d\n", len(name));
 	char a = charat(name, 122);
 
     strdel(name);
