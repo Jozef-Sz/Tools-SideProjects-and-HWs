@@ -114,3 +114,6 @@ Returns string converted from a double
 * strdel_array() - frees a string arrays memory
 * print() - prints an arbitrary number of strings and char* without new line 
 * println() - prints an arbitrary number of strings and char* with new line 
+
+### NOTES:
+If you find any bug or mistake in the library's code, please make an issue labeled with the strlib label. 

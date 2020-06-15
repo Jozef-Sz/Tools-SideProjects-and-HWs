@@ -301,14 +301,57 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
     }
 }
 
+int get_int_length(int nu)
+{
+    if (nu == 0) return 1;
+    int length = 0;
+    long temp = 1;
+    while (temp <= nu)
+    {
+        length++;
+        temp *= 10;
+    }
+    return length;
+}
+
 string parse_int(int number)
 {
-
+    string s;
+    s.length = malloc(sizeof(int));
+    s.capacity = malloc(sizeof(int));
+    if (number < 0)
+    {
+        // Plus 1, because of the minus sign
+        *s.length = get_int_length(abs(number)) + 1;
+        *s.capacity = *s.length + STR_BACKUP_SIZE;
+        s.str = malloc(*s.capacity * sizeof(char));
+        sprintf(s.str, "%d", number);
+    }
+    else 
+    {
+        *s.length = get_int_length(number);
+        *s.capacity = *s.length + STR_BACKUP_SIZE;
+        s.str = malloc(*s.capacity * sizeof(char));
+        sprintf(s.str, "%d", number);
+    }
+    return s;
 }
 
 string parse_double(double number)
 {
+    string s;
+    s.length = malloc(sizeof(int));
+    s.capacity = malloc(sizeof(int));
+    // The largest possible long double takes 4934 characters including the dot and possible minus sign
+    if (number < 0)
+    {
 
+    }
+    else 
+    {
+
+    }
+    return s;
 }
 
 void strdel(string arg) 

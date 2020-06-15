@@ -3,17 +3,13 @@
 
 int main() 
 {
-    string name = str("Joco a szarhazi szar");
-    printf("|%s|\n", strget(name));
-    printf("Size of the string: %d\n", len(name));
+    for (int i = -100; i < 101; i++)
+    {
+        string snumber = parse_int(i);
+        printf("|%s|\n", strget(snumber));
+        printf("Size of the string: %d\n", len(snumber));
+        strdel(snumber);
+    }
 
-    replace(name, "a", "", ALL);
-    printf("|%s|\n", strget(name));
-    printf("Size of the string: %d\n", len(name));
-	// char a = charat(name, 122);
-
-    printf("res: %d\n", contains(name, "szar"));
-
-    strdel(name);
     return 0;
 }
