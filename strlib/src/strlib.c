@@ -321,7 +321,7 @@ string parse_int(int number)
     s.capacity = malloc(sizeof(int));
     if (number < 0)
     {
-        // Plus 1, because of the minus sign
+        // Plus 1, because of the minus sign.
         *s.length = get_int_length(abs(number)) + 1;
         *s.capacity = *s.length + STR_BACKUP_SIZE;
         s.str = malloc(*s.capacity * sizeof(char));
@@ -342,15 +342,23 @@ string parse_double(double number)
     string s;
     s.length = malloc(sizeof(int));
     s.capacity = malloc(sizeof(int));
-    // The largest possible long double takes 4934 characters including the dot and possible minus sign
-    if (number < 0)
-    {
+    // The largest possible long double takes 4934 characters 
+    // including the dot and possible minus sign.
+    char* tmp = malloc(4934 * sizeof(char));
+    sprintf(tmp, "%f", number);
 
-    }
-    else 
+    // Trim zeros from the end, btw asci zero is 48.
+    int last_char = (int)strlen(tmp) - 1;
+    while (tmp[last_char] == '0' || tmp[last_char] == 48)
     {
-
+        tmp[last_char] = '\0';
+        last_char--;
     }
+    *s.length = (int)strlen(tmp);
+    *s.capacity = *s.length + STR_BACKUP_SIZE;
+    s.str = malloc(*s.capacity * sizeof(char));
+    strcpy(s.str, tmp);
+    free(tmp);
     return s;
 }
 

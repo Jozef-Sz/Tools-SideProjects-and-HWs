@@ -1,6 +1,8 @@
 # Executables
 bin/main.exe
 bin/main
+bin/test.exe 
+bin/test
 
 #Obj files
 obj/*.o
