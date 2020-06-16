@@ -165,7 +165,7 @@ b) Create two files in your project, one named strlib.h and one strlib.c, then c
 To contribute to strlib you will need GNU Make, it's not necessary, but recommended. Anyway please follow these steps:
 
 1. Clone this repository to your local machine.
-2. Setup your project structure (only if you want or use Make) by creating directories named **bin** and **obj** so the structure looks like this:<br/>
+2. Setup your project structure (only if you want to use Make) by creating directories named **bin** and **obj** so the structure looks like this:<br/>
 .<br/>
 ├── bin<br/>
 ├── LICENSE<br/>
@@ -179,37 +179,8 @@ To contribute to strlib you will need GNU Make, it's not necessary, but recommen
 └── test<br/>
     └── test.c<br/>
 
-3. Crete Makefile (also only if you want to use Make). Here is a template if don't want to create your own:<br/>
-Windows:<br/>
-Linux:<br/>
-```Makefile
-main: ./obj/sandbox.o ./obj/strlib.o
-	gcc obj/sandbox.o obj/strlib.o -o bin/main
-
-./obj/sandbox.o: ./src/sandbox.c
-	gcc -c src/sandbox.c -o obj/sandbox.o
-
-./obj/strlib.o: ./src/strlib.c ./src/strlib.h
-	gcc -c src/strlib.c -o obj/strlib.o
-
-run:
-	@./bin/main
-
-test: ./obj/test.o ./obj/strlib.o
-	gcc obj/test.o  obj/strlib.o -o bin/test
-
-./obj/test.o: ./test/test.c 
-	gcc -c test/test.c -o obj/test.o
-
-runtest:
-	@./bin/test
-
-clear:
-	rm obj/*.o bin/main
-```
-
-4. Develop and have fun :smile:
-5. Create a pull request, which I thank you in advance :wink: :smiley:
+3. Develop and have fun :smile:
+4. Create a pull request, which I thank you in advance :wink: :smiley:
 
 ### NOTES:
 If you find any bug or mistake in the library's code, please make an issue labeled with the strlib label. 
