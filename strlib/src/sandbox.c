@@ -3,13 +3,13 @@
 
 int main() 
 {
-    for (int i = -1; i < 2; i++)
-    {
-        string snumber = parse_int(i);
-        printf("|%s|\n", strget(snumber));
-        printf("Size of the string: %d\n", len(snumber));
-        strdel(snumber);
-    }
+    set_textcolor(BLACK);
+    printf("This is now black\n");
+    set_textcolor(BRIGHT_WHITE);
+    printf("And white\n");
+    set_textcolor(LIGHT_RED);
+    printf("REeeeeed\n");
+    reset_textcolor();
 
     string num = parse_double(-56.3423);
     printf("|%s|\n", strget(num));

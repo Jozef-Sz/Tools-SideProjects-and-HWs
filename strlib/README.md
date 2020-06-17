@@ -10,6 +10,7 @@ Disclaimer, the last statement about memory is in the users responsibility to ha
 - [Types](#types)
 - [Functions](#functions)
     - [string creation](#string-creation)
+    - [string input](#string-input)
     - [extending string](#extending-string)
     - [string properties](#string-properties)
     - [string manipulation](#string-manipulation)
@@ -39,6 +40,16 @@ string strcopy(string arg)
 ```
 Returns an exact copy of the passed string.
 * **arg** - any kind of string we want to get copied
+
+---
+#### String input
+```C
+string strscan(const char* msg, ...)
+```
+Basicaly works the same as **scanf()** with slight differences. Instead of scanning input to a variable
+this returns a string. This function takes in a message which is printed before scannig, just like in 
+python. You can create messages the same way as with printf `string input = strscan("Is %d your lucky number? ", 121);`.
+* **msg** - can be any formated message
 
 ---
 #### Extending string
@@ -128,6 +139,8 @@ Returns string converted from a double
 
 
 ## Upcoming features:
+* set_textcolor() - takes one parameter color and sets it
+* reset_textcolor() - resets text color to what was before set_textcolor was called
 * int_tostring() - returns integer to string
 * double_tostring() - returns double to string
 * tolower() - returns string all lower case
@@ -177,7 +190,7 @@ To contribute to strlib you will need GNU Make, it's not necessary, but recommen
 │   ├── strlib.c<br/>
 │   └── strlib.h<br/>
 └── test<br/>
-    └── test.c<br/>
+     └── test.c<br/>
 
 3. Develop and have fun :smile:
 4. Create a pull request, which I thank you in advance :wink: :smiley:

@@ -84,7 +84,7 @@ void throw_error(const char* msg, ...)
     va_list arg;
     va_start(arg, msg);
 
-    printf("\n\x1b[31m");
+    printf("\n%s", RED);
     printf("[ERROR]: ");
     vfprintf(stdout, msg, arg);
     printf("\x1b[0m\n");
@@ -97,12 +97,16 @@ void throw_warning(const char* msg, ...)
 	va_list arg;
 	va_start(arg, msg);
 
-	printf("\n\x1b[33m");
+	printf("\n%s", YELLOW);
 	printf("[WARNING]: ");
 	vfprintf(stdout, msg, arg);
 	printf("\x1b[0m\n");
 	va_end(arg);
 }
+
+void set_textcolor(const char* txt_c) { printf("%s", txt_c); }
+
+void reset_textcolor() { printf("\x1b[0m"); }
 
 #endif
 
@@ -123,6 +127,26 @@ string str(const char* raw_s)
     *s.capacity = *s.length + (int)STR_BACKUP_SIZE;
     s.str = malloc(*s.capacity * sizeof(char));
     strcpy(s.str, raw_s);
+    s.is_initialized = "Initialized";
+    return s;
+}
+
+string strscan(const char* msg, ...)
+{
+    string s;
+    va_list arg;
+    va_start(arg, msg);
+    char input_buffer[SCAN_BUFFER];
+    s.length = malloc(sizeof(int));
+    s.capacity = malloc(sizeof(int));
+
+    vfprintf(stdout, msg, arg);
+    scanf("%s", input_buffer);
+    *s.length = (int)strlen(input_buffer);
+    *s.capacity = *s.length * STR_BACKUP_SIZE;
+    s.str = malloc(*s.capacity * sizeof(char));
+    strcpy(s.str, input_buffer);
+    s.is_initialized = "Initialized";
     return s;
 }
 
@@ -177,6 +201,7 @@ string substr(string arg, int from, int to)
         ssindex++;
     }
     subs.str[i] = '\0';
+    subs.is_initialized = "Initialized";
     return subs;
 }
 
@@ -189,6 +214,7 @@ string strcopy(string arg)
     *copy.capacity = *arg.capacity;
     copy.str = malloc(*copy.capacity * sizeof(char));
     strcpy(copy.str, arg.str);
+    copy.is_initialized = "Initialized";
     return copy;
 }
 /* Returns a structure, which consists of a number of occurrances
@@ -334,6 +360,7 @@ string parse_int(int number)
         s.str = malloc(*s.capacity * sizeof(char));
         sprintf(s.str, "%d", number);
     }
+    s.is_initialized = "Initialized";
     return s;
 }
 
@@ -358,6 +385,7 @@ string parse_double(double number)
     *s.capacity = *s.length + STR_BACKUP_SIZE;
     s.str = malloc(*s.capacity * sizeof(char));
     strcpy(s.str, tmp);
+    s.is_initialized = "Initialized";
     free(tmp);
     return s;
 }
@@ -367,6 +395,7 @@ void strdel(string arg)
     free(arg.str);
     free(arg.length);
     free(arg.capacity); 
+    arg.is_initialized = NULL;
 }
 
 int len(string arg) { return *arg.length; }
