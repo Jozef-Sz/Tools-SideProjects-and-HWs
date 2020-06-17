@@ -17,6 +17,7 @@ Disclaimer, the last statement about memory is in the users responsibility to ha
     - [string search](#string-search)
     - [string memory management](#string-memory-management)
     - [string conversion](#string-conversion)
+    - [text coloring](#text-coloring)
 - [Upcoming features](#upcoming-features)
 - [Example code](#example-code)
 - [For user's of strlib](#for-user's-of-strlib)
@@ -54,14 +55,14 @@ python. You can create messages the same way as with printf `string input = strs
 ---
 #### Extending string
 ```C
-string strpush(string base, const char* tail)
+void strpush(string base, const char* tail)
 ```
 Is used for extending a string with raw text as "example" or with any const char* just like does the plus operator in other languages.
 * **base** - some string to be extended
 * **tail** - text to be extended with 
 
 ```C
-string stradd(string base, string tail)
+void stradd(string base, string tail)
 ```
 Is also used for extending string, but in this case with another string. It's only purpose is convenience, but you can as well use **strpush**(somestring, **strget**(otherstring)); and get the same result. 
 * **base** - some string to be extended
@@ -123,6 +124,7 @@ void strdel(string arg)
 ```
 Frees up the memory of a particular string. CAUTION: the string variable a.k.a. struct will be still available, but the string and it's length itself will be empty.
 * **arg** - string we want to free it's memory
+
 ---
 #### String conversion
 ```C
@@ -137,10 +139,38 @@ string parse_double(double number)
 Returns string converted from a double
 * **number** - floating point number
 
+---
+#### Text coloring
+```C
+void set_textcolor(color constant) 
+```
+Sets the color for every text output after calling this function. For resetting the original text color, as you might have guessed, you need to call `reset_textcolor();`. 
+* **color constant** - one color from the listed [color constants](#color-constants)
+
+```C
+void reset_textcolor()
+```
+Calling reset_textcolor resets text color to, which was before the first set_textcolor() call.
+
+#### Color constants:
+* BLACK       
+* BLUE        
+* GREEN       
+* AQUA        
+* RED         
+* PURPLE      
+* YELLOW      
+* WHITE       
+* GRAY        
+* LIGHT_BLUE  
+* LIGHT_GREEN 
+* LIGHT_AQUA  
+* LIGHT_RED   
+* LIGHT_PURPLE
+* LIGHT_YELLOW
+* BRIGHT_WHITE
 
 ## Upcoming features:
-* set_textcolor() - takes one parameter color and sets it
-* reset_textcolor() - resets text color to what was before set_textcolor was called
 * int_tostring() - returns integer to string
 * double_tostring() - returns double to string
 * tolower() - returns string all lower case
@@ -161,11 +191,42 @@ Returns string converted from a double
 
 int main()
 {
-    string 
+    string myname = str("James");
+    string mylastname = str("Johnson");
+
+    string guest = strscan("What is your name: ");
+
+    strpush(myname, " ");
+    stradd(myname, mylastname);
+
+    printf("Nice to meet you %s. I am %s.\n", strget(guest), strget(myname));
+
+    int age;
+    printf("How old are you: ");
+    scanf("%d", &age);
+
+    string guestage = parse_int(age);
+    printf("That's good. I'm also %s year old.\n", strget(guestage));
+
+    string schedule = str("So today we're going to visit the Eiffel Tower.");
+    replace(schedule, "Eiffel Tower", "Statue of Liberty", ALL);
+
+    printf("%s\n", strget(schedule));
+
+    strdel(myname);
+    strdel(mylastname);
+    strdel(guestage);
+    strdel(schedule);
 
     return 0;
 }
 ```
+#### Expected outpu:
+What is your name: Frank<br/>
+Nice to meet you Frank. I am James Johnson.<br/>
+How old are you: 25<br/>
+That's good. I'm also 25 year old.<br/>
+So today we're going to visit the Statue of Liberty.
 
 ## For user's of strlib
 In case you intend to use strlib in your project, you will have to:
@@ -190,7 +251,7 @@ To contribute to strlib you will need GNU Make, it's not necessary, but recommen
 │   ├── strlib.c<br/>
 │   └── strlib.h<br/>
 └── test<br/>
-     └── test.c<br/>
+  └── test.c
 
 3. Develop and have fun :smile:
 4. Create a pull request, which I thank you in advance :wink: :smiley:

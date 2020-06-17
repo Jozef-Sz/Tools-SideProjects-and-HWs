@@ -30,6 +30,33 @@ color_set decode_color(unsigned short color_c)
     return cs;
 }
 
+// Global variables for hangling text colors
+color_set ORIGINAL_CMD_COLOR;
+int is_color_saved = 0;
+
+void set_textcolor(unsigned short txt_c) 
+{ 
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (! is_color_saved) 
+    {
+        CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        ORIGINAL_CMD_COLOR = decode_color(consoleInfo.wAttributes);
+        is_color_saved = 1;
+    }
+
+    SetConsoleTextAttribute(hConsole, encode_color(ORIGINAL_CMD_COLOR.bg, txt_c));
+}
+
+void reset_textcolor() 
+{  
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    SetConsoleTextAttribute(hConsole, encode_color(ORIGINAL_CMD_COLOR.bg, ORIGINAL_CMD_COLOR.fg));
+}
+
 void throw_error(const char* msg, ...)
 {
     va_list arg;
@@ -147,6 +174,7 @@ string strscan(const char* msg, ...)
     s.str = malloc(*s.capacity * sizeof(char));
     strcpy(s.str, input_buffer);
     s.is_initialized = "Initialized";
+    va_end(arg);
     return s;
 }
 
@@ -390,12 +418,16 @@ string parse_double(double number)
     return s;
 }
 
-void strdel(string arg) 
+void strdel(string arg, ...) 
 { 
+    va_list arglist;
+    va_start(arglist, arg);
+
     free(arg.str);
     free(arg.length);
     free(arg.capacity); 
     arg.is_initialized = NULL;
+    va_end(arglist);
 }
 
 int len(string arg) { return *arg.length; }

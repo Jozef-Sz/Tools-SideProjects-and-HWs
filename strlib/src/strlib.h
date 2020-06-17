@@ -73,7 +73,7 @@ string substr(string arg, int from, int to);
 
 int len(string arg);
 
-void strdel(string arg);
+void strdel(string arg, ...);
 
 string strcopy(string arg);
 
