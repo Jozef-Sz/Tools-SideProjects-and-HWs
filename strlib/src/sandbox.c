@@ -3,34 +3,27 @@
 
 int main() 
 {
-    string myname = str("James");
-    string mylastname = str("Johnson");
+    string number = str("45");
+    printf("From string %s, to integer %d\n", strget(number), parse_int(number));
 
-    string guest = strscan("What is your name: ");
+    strpush(number, "hello");
+    printf("From string %s, to integer %d\n", strget(number), parse_int(number));
 
-    strpush(myname, " ");
-    stradd(myname, mylastname);
+    string decimal = str("34343.54453");
+    printf("From string %s, to double %f\n", strget(decimal), parse_double(decimal));
 
-    printf("Nice to meet you %s. I am %s.\n", strget(guest), strget(myname));
+    strpush(decimal, "asdgadsfg");
+    printf("From string %s, to double %f\n", strget(decimal), parse_double(decimal));
 
-    int age;
-    printf("How old are you: ");
-    scanf("%d", &age);
+    string upper = str("NEW BALANCE 547");
+    tolower_case(upper);
+    printf("|%s|\n", strget(upper));
 
-    string guestage = parse_int(age);
-    printf("That's good. I'm also %s year old.\n", strget(guestage));
+    toupper_case(upper);
+    printf("Back to upper case |%s|\n", strget(upper));
 
-    string schedule = str("So today we're going to visit the Eiffel Tower.");
-    replace(schedule, "Eiffel Tower", "Statue of Liberty", ALL);
-
-    printf("%s\n", strget(schedule));
-
-    strdel(myname);
-    strdel(mylastname);
-    strdel(guestage);
-    strdel(schedule);
-
-    return 0;
-
+    strdel(number);
+    strdel(decimal);
+    strdel(upper);
     return 0;
 }

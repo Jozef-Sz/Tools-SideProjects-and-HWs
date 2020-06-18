@@ -73,7 +73,7 @@ string substr(string arg, int from, int to);
 
 int len(string arg);
 
-void strdel(string arg, ...);
+void strdel(string arg);
 
 string strcopy(string arg);
 
@@ -83,8 +83,16 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
 
 string strscan(const char* msg, ...);
 
-string parse_int(int number);
+string int_tostr(int number);
 
-string parse_double(double number);
+string double_tostr(double number);
+
+int parse_int(string strnum);
+
+double parse_double(string strnum);
+
+void tolower_case(string arg);
+
+void toupper_case(string arg);
 
 #endif

@@ -355,6 +355,28 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
     }
 }
 
+void tolower_case(string arg)
+{
+    for (int i = 0; i < *arg.length; i++)
+    {
+        if (arg.str[i] >= 'A' && arg.str[i] <= 'Z')
+        {
+            arg.str[i] += 32;
+        }
+    }
+}
+
+void toupper_case(string arg)
+{
+    for (int i = 0; i < *arg.length; i++)
+    {
+        if (arg.str[i] >= 'a' && arg.str[i] <= 'z')
+        {
+            arg.str[i] -= 32;
+        }
+    }
+}
+
 int get_int_length(int nu)
 {
     if (nu == 0) return 1;
@@ -368,7 +390,7 @@ int get_int_length(int nu)
     return length;
 }
 
-string parse_int(int number)
+string int_tostr(int number)
 {
     string s;
     s.length = malloc(sizeof(int));
@@ -392,7 +414,7 @@ string parse_int(int number)
     return s;
 }
 
-string parse_double(double number)
+string double_tostr(double number)
 {
     string s;
     s.length = malloc(sizeof(int));
@@ -418,16 +440,22 @@ string parse_double(double number)
     return s;
 }
 
-void strdel(string arg, ...) 
-{ 
-    va_list arglist;
-    va_start(arglist, arg);
+int parse_int(string strnum)
+{
+    return atoi(strnum.str);
+}
 
+double parse_double(string strnum)
+{
+    return atof(strnum.str);
+}
+
+void strdel(string arg) 
+{ 
     free(arg.str);
     free(arg.length);
     free(arg.capacity); 
     arg.is_initialized = NULL;
-    va_end(arglist);
 }
 
 int len(string arg) { return *arg.length; }

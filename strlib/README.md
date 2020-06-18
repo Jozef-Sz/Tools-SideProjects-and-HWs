@@ -108,6 +108,18 @@ Is used for raplacing a section of the string. It replaces based on a pattern li
 * **filling** - the replaced portion is going to be replaced with this
 * **occurrance** - number of desired replacements, if ALL or 0 (they're the same, ALL is just a macro) every occurance is replaced
 
+```C
+void tolower_case(string arg)
+```
+Changes every letter to lower case in the string
+* **arg** - any kind of string
+
+```C
+void toupper_case(string arg)
+```
+Changes every letter to upper case in the string
+* **arg** - any kind of string
+
 ---
 #### String search
 ```C
@@ -128,16 +140,28 @@ Frees up the memory of a particular string. CAUTION: the string variable a.k.a. 
 ---
 #### String conversion
 ```C
-string parse_int(int number)
+string int_tostr(int number)
 ```
 Returns string converted from an integer
 * **number** - integer number
 
 ```C
-string parse_double(double number)
+string double_tostr(double number)
 ```
 Returns string converted from a double
-* **number** - floating point number
+* **number** - double decimal number
+
+```C
+int parse_int(string strnum)
+```
+Returns an integer converted from string
+* **strnum** - any kind of string 
+
+```C
+double parse_double(double strnum)
+```
+Returns a double converted from string
+* **strnum** - any kind of string 
 
 ---
 #### Text coloring
@@ -171,10 +195,6 @@ Calling reset_textcolor resets text color to, which was before the first set_tex
 * BRIGHT_WHITE
 
 ## Upcoming features:
-* int_tostring() - returns integer to string
-* double_tostring() - returns double to string
-* tolower() - returns string all lower case
-* toupper() - returns string all upper case
 * str_t() - creates a string from template just like printf does
 * trimstart() - removes whitespace from the beginning of a string 
 * trimend() - removes whitespace from the end of a string
@@ -205,7 +225,7 @@ int main()
     printf("How old are you: ");
     scanf("%d", &age);
 
-    string guestage = parse_int(age);
+    string guestage = int_tostr(age);
     printf("That's good. I'm also %s year old.\n", strget(guestage));
 
     string schedule = str("So today we're going to visit the Eiffel Tower.");
