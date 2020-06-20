@@ -3,59 +3,27 @@
 
 int main() 
 {
-    string name = str("Joco");
-    printf("Here is our string: %s|\n", name.str);
-    printf("Length %d\n", *name.length);
-    printf("Capacity %d\n", *name.capacity);
+    string number = str("45");
+    printf("From string %s, to integer %d\n", strget(number), parse_int(number));
 
-    // strpush(name, " is");
-    // printf("Here is our string: %s|\n", name.str);
-    // printf("Length %d\n", *name.length);
-    // printf("Capacity %d\n", *name.capacity);
+    strpush(number, "hello");
+    printf("From string %s, to integer %d\n", strget(number), parse_int(number));
 
-    // strpush(name, " the b");
-    // printf("Here is our string: %s|\n", name.str);
-    // printf("Length %d\n", *name.length);
-    // printf("Capacity %d\n", *name.capacity);
+    string decimal = str("34343.54453");
+    printf("From string %s, to double %f\n", strget(decimal), parse_double(decimal));
 
-    // string the = substr(name, 8, 10);
-    // printf("Here is out substring: |%s|\n", the.str);
-    // printf("Length %d\n", *the.length);
-    // printf("Capacity %d\n", *the.capacity);
+    strpush(decimal, "asdgadsfg");
+    printf("From string %s, to double %f\n", strget(decimal), parse_double(decimal));
 
-    // string pika = str("Pika");
-    // printf("Here is our string: %s|\n", pika.str);
-    // printf("Length %d\n", *pika.length);
-    // printf("Capacity %d\n", *pika.capacity);
-    // string boo = str("boo");
-    // printf("Here is our string: %s|\n", boo.str);
-    // printf("Length %d\n", *boo.length);
-    // printf("Capacity %d\n", *boo.capacity);
-    // stradd(pika, boo);
-    // printf("Here is our string: %s|\n", pika.str);
-    // printf("Length %d\n", *pika.length);
-    // printf("Capacity %d\n", *pika.capacity);
-    
-    string namecopy = strcopy(name);
-    printf("Here is our string: %s|\n", namecopy.str);
-    printf("Length %d\n", *namecopy.length);
-    printf("Capacity %d\n", *namecopy.capacity);
+    string upper = str("NEW BALANCE 547");
+    tolower_case(upper);
+    printf("|%s|\n", strget(upper));
 
-    strpush(namecopy, " hello");
-    printf("Here is our string: %s|\n", namecopy.str);
-    printf("Length %d\n", *namecopy.length);
-    printf("Capacity %d\n", *namecopy.capacity);
-    printf("Here is our string: %s|\n", name.str);
-    printf("Length %d\n", *name.length);
-    printf("Capacity %d\n", *name.capacity);
+    toupper_case(upper);
+    printf("Back to upper case |%s|\n", strget(upper));
 
-    printf("%d", contains(namecopy, "o"));
-
-
-    strdel(name);
-    strdel(namecopy);
-    // strdel(the);
-    // strdel(pika);
-    // strdel(boo);
+    strdel(number);
+    strdel(decimal);
+    strdel(upper);
     return 0;
 }

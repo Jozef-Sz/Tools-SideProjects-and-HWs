@@ -1,8 +1,7 @@
 # Executables
-bin/main.exe
-bin/main
+bin/*.exe
+bin/main 
+bin/test
 
 #Obj files
 obj/*.o
-
-Makefile
