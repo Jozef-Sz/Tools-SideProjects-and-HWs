@@ -17,6 +17,7 @@ typedef TESTRESULT (*testresult_func_ptr)();
 // a pointer pointer) and their amount
 typedef struct {
     testresult_func_ptr* test_subjects;
+    char** indetifiers;
     int amount;
     int cap;
 } TEST;
@@ -24,6 +25,8 @@ typedef struct {
 
 TEST* create_testpool();
 
-void add_testsubject(TEST* pool, testresult_func_ptr fn);
+void add_testsubject(TEST* pool, testresult_func_ptr fn, char* identifier);
+
+void evaluate_testpool(TEST* pool);
 
 #endif

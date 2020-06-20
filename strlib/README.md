@@ -62,9 +62,25 @@ Is used for extending a string with raw text as "example" or with any const char
 * **tail** - text to be extended with 
 
 ```C
+string strnpush(string base, const char* tail)
+```
+This function does exatly the same operation as strpush() does, except this isn't modifying the existing string, but returns a modified one.
+Why? Short answer: when you want concatinate very very large string then you must use this function. Long answer: under the hood the string type is a struct, which contains a char* and when you are cancatinating really long string, you need to reallocate the existing memory. Reallocation at these sizes returns a completely new pointer and you have to somehow update the pointer in you project. So strnpush() returns that new pointer inside the string type and you just need to assign it. Example:<br/> `string pi_in_string = str("3.14");`<br/> `pi_in_string = strnpush(pi_in_string, "15926535(and another 100000 digits of pi)");` This will work<br/>
+`strpush(pi_in_string, "15926535(and another 100000 digits of pi)");` This won't work
+* **base** - some string to be extended
+* **tail** - text to be extended with 
+
+```C
 void stradd(string base, string tail)
 ```
 Is also used for extending string, but in this case with another string. It's only purpose is convenience, but you can as well use **strpush**(somestring, **strget**(otherstring)); and get the same result. 
+* **base** - some string to be extended
+* **tail** - string to be extended with
+
+```C
+string strnadd(string base, string tail)
+```
+Works the same way as stradd(), but this will return the modified value. Wondering why? Please read the docs of strnpush function.
 * **base** - some string to be extended
 * **tail** - string to be extended with
 
@@ -229,7 +245,7 @@ int main()
     printf("That's good. I'm also %s year old.\n", strget(guestage));
 
     string schedule = str("So today we're going to visit the Eiffel Tower.");
-    replace(schedule, "Eiffel Tower", "Statue of Liberty", ALL);
+    schedule = replace(schedule, "Eiffel Tower", "Statue of Liberty", ALL);
 
     printf("%s\n", strget(schedule));
 

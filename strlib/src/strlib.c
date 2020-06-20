@@ -188,7 +188,10 @@ void strpush(string base, const char* tail)
     {
         *base.length = *base.length + (int)tail_length;
         *base.capacity = *base.length + (int)STR_BACKUP_SIZE;
+        char* old_str_ptr = base.str;
         base.str = realloc(base.str, *base.capacity);
+        if (base.str == NULL || base.str != old_str_ptr)
+            throw_error("Couldn't allocate new memory for longer string.\n         Please consider using strnpush instead.");
         strcat(base.str, tail);
     } 
     else 
@@ -198,10 +201,42 @@ void strpush(string base, const char* tail)
     }
 }
 
+string strnpush(string base, const char* tail)
+{
+    size_t tail_length = strlen(tail);
+    /* (*base.capacity - 1) is because of the null termiantion.
+       I am not sure, if it's necessary, anyway it doesn't 
+       hurts even if it's not necessary. */
+    if (*base.length + tail_length > *base.capacity - 1)
+    {
+        *base.length = *base.length + (int)tail_length;
+        *base.capacity = *base.length + (int)STR_BACKUP_SIZE;
+        char* old_str_ptr = base.str;
+        base.str = realloc(base.str, *base.capacity);
+        if (base.str == NULL)
+        {
+            free(old_str_ptr);
+            throw_error("Couldn't allocate new memory for longer string.");
+        }
+        strcat(base.str, tail);
+        return base;
+    } 
+    
+    *base.length = *base.length + (int)tail_length;
+    strcat(base.str, tail);
+    return base;
+}
+
 void stradd(string base, string tail)
 {
     const char* str = tail.str;
     strpush(base, str);
+}
+
+string strnadd(string base, string tail)
+{
+    const char* str = tail.str;
+    return strnpush(base, str);
 }
 
 char charat(string arg, int index)
@@ -315,12 +350,14 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
     else
     {
         string copy = strcopy(arg);
-        int new_size = *arg.length - replacements * (int)strlen(pattern) + 
+        *arg.length = *arg.length - replacements * (int)strlen(pattern) + 
                        replacements * (int)strlen(filling);
-		*arg.length = new_size;
-		*arg.capacity = new_size + (int)STR_BACKUP_SIZE;
+		*arg.capacity = *arg.length + (int)STR_BACKUP_SIZE;
 		const char* old_str = copy.str;
+        const char* old_str_ptr = arg.str;
 		arg.str = realloc(arg.str, *arg.capacity * sizeof(char));
+        if (arg.str == NULL || arg.str != old_str_ptr)
+            throw_error("Couldn't allocate new memory for longer string.\n         Please make na issue on https://github.com/Jozef-Sz/Tools-SideProjects-and-HWs with label strlib.");
 
 		int old_str_index = 0;
         int new_str_index = 0;
@@ -421,7 +458,8 @@ string double_tostr(double number)
     s.capacity = malloc(sizeof(int));
     // The largest possible long double takes 4934 characters 
     // including the dot and possible minus sign.
-    char* tmp = malloc(4934 * sizeof(char));
+    // char* tmp = malloc(4934 * sizeof(char));
+    char tmp[4934];
     sprintf(tmp, "%f", number);
 
     // Trim zeros from the end, btw asci zero is 48.
@@ -436,18 +474,8 @@ string double_tostr(double number)
     s.str = malloc(*s.capacity * sizeof(char));
     strcpy(s.str, tmp);
     s.is_initialized = "Initialized";
-    free(tmp);
+    // free(tmp);
     return s;
-}
-
-int parse_int(string strnum)
-{
-    return atoi(strnum.str);
-}
-
-double parse_double(string strnum)
-{
-    return atof(strnum.str);
 }
 
 void strdel(string arg) 
@@ -457,6 +485,10 @@ void strdel(string arg)
     free(arg.capacity); 
     arg.is_initialized = NULL;
 }
+
+int parse_int(string strnum) { return atoi(strnum.str); }
+
+double parse_double(string strnum) { return atof(strnum.str); }
 
 int len(string arg) { return *arg.length; }
 

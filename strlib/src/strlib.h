@@ -63,7 +63,11 @@ string str(const char* raw_s);
 
 void strpush(string base, const char* tail);
 
+string strnpush(string base, const char* tail);
+
 void stradd(string base, string tail);
+
+string strnadd(string base, string tail);
 
 const char* strget(string arg);
 

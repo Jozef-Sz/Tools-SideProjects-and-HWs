@@ -22,6 +22,9 @@ int main()
     toupper_case(upper);
     printf("Back to upper case |%s|\n", strget(upper));
 
+    upper = strnpush(upper, "as");
+    printf("|%s|\n", strget(upper));
+
     strdel(number);
     strdel(decimal);
     strdel(upper);
