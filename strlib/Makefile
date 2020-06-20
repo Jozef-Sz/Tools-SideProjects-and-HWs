@@ -12,17 +12,29 @@ run:
 	@./bin/main
 
 # Compile unit testing
-test: ./obj/test.o ./obj/strlib.o
-	gcc obj/test.o  obj/strlib.o -o bin/test
+test: ./obj/strlib_unittest.o ./obj/test.o ./obj/strlib.o
+	gcc obj/strlib_unittest.o obj/test.o  obj/strlib.o -o bin/test
 
-./obj/test.o: ./test/test.c 
+./obj/strlib_unittest.o: ./test/strlib_unittest.c 
+	gcc -c test/strlib_unittest.c -o obj/strlib_unittest.o
+
+./obj/test.o: ./test/test.c ./test/test.h
 	gcc -c test/test.c -o obj/test.o
 
 # Run unit testing
 runtest:
 	@./bin/test
 
+
+
 ifeq ($(OS), Windows_NT)
+# FYI: bar stands for "Build and Run"
+bar: ./obj/sandbox.o ./obj/strlib.o 
+	@gcc obj/sandbox.o obj/strlib.o -o bin/main && bin\main
+	
+bartest: ./obj/strlib_unittest.o ./obj/test.o ./obj/strlib.o 
+	@gcc obj/strlib_unittest.o obj/test.o  obj/strlib.o -o bin/test && bin\test
+
 clear:
 	del obj\*.o bin\*.exe
 
@@ -31,12 +43,10 @@ else
 bar: ./obj/sandbox.o ./obj/strlib.o 
 	@gcc obj/sandbox.o obj/strlib.o -o bin/main && ./bin/main
 	
-bartest: ./obj/test.o ./obj/strlib.o 
-	@gcc obj/test.o obj/strlib.o -o bin/test && ./bin/test
+bartest: ./obj/strlib_unittest.o ./obj/test.o ./obj/strlib.o 
+	@gcc obj/strlib_unittest.o obj/test.o  obj/strlib.o -o bin/test && ./bin/test
 
 clear:
 	rm obj/*.o bin/*
+
 endif
-
-
-
