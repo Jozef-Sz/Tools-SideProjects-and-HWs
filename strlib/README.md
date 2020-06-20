@@ -158,7 +158,7 @@ Returns an integer converted from string
 * **strnum** - any kind of string 
 
 ```C
-double parse_double(double strnum)
+double parse_double(string strnum)
 ```
 Returns a double converted from string
 * **strnum** - any kind of string 

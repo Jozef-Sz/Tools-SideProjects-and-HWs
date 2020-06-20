@@ -25,7 +25,15 @@ runtest:
 ifeq ($(OS), Windows_NT)
 clear:
 	del obj\*.o bin\*.exe
+
 else
+# FYI: bar stands for "Build and Run"
+bar: ./obj/sandbox.o ./obj/strlib.o 
+	@gcc obj/sandbox.o obj/strlib.o -o bin/main && ./bin/main
+	
+bartest: ./obj/test.o ./obj/strlib.o 
+	@gcc obj/test.o obj/strlib.o -o bin/test && ./bin/test
+
 clear:
 	rm obj/*.o bin/*
 endif
