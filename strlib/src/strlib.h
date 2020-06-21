@@ -51,48 +51,49 @@ void reset_textcolor();
 
 typedef struct {
     char* str;
-    int* length;
-    int* capacity;
-    char* is_initialized;
-} string;
+    int length;
+    int capacity;
+} str_class;
+
+typedef str_class* string;
 
 
 void throw_error(const char* msg, ...);
 
 string str(const char* raw_s);
 
-void strpush(string base, const char* tail);
+// void strpush(string base, const char* tail);
 
-void stradd(string base, string tail);
+// void stradd(string base, string tail);
 
 const char* strget(string arg);
 
-char charat(string arg, int index);
+// char charat(string arg, int index);
 
-string substr(string arg, int from, int to);
+// string substr(string arg, int from, int to);
 
 int len(string arg);
 
-void strdel(string arg);
+// void strdel(string arg);
 
-string strcopy(string arg);
+// string strcopy(string arg);
 
-int contains(string arg, const char* pattern);
+// int contains(string arg, const char* pattern);
 
-void replace(string arg, const char* pattern, const char* filling, int occurrences);
+// void replace(string arg, const char* pattern, const char* filling, int occurrences);
 
-string strscan(const char* msg, ...);
+// string strscan(const char* msg, ...);
 
-string int_tostr(int number);
+// string int_tostr(int number);
 
-string double_tostr(double number);
+// string double_tostr(double number);
 
-int parse_int(string strnum);
+// int parse_int(string strnum);
 
-double parse_double(string strnum);
+// double parse_double(string strnum);
 
-void tolower_case(string arg);
+// void tolower_case(string arg);
 
-void toupper_case(string arg);
+// void toupper_case(string arg);
 
 #endif

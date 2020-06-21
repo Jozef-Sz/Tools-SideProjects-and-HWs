@@ -3,27 +3,10 @@
 
 int main() 
 {
-    string number = str("45");
-    printf("From string %s, to integer %d\n", strget(number), parse_int(number));
+    string johanes = str("Johannes");
+    printf("|%s| and its length %d\n", strget(johanes), len(johanes));
 
-    strpush(number, "hello");
-    printf("From string %s, to integer %d\n", strget(number), parse_int(number));
-
-    string decimal = str("34343.54453");
-    printf("From string %s, to double %f\n", strget(decimal), parse_double(decimal));
-
-    strpush(decimal, "asdgadsfg");
-    printf("From string %s, to double %f\n", strget(decimal), parse_double(decimal));
-
-    string upper = str("NEW BALANCE 547");
-    tolower_case(upper);
-    printf("|%s|\n", strget(upper));
-
-    toupper_case(upper);
-    printf("Back to upper case |%s|\n", strget(upper));
-
-    strdel(number);
-    strdel(decimal);
-    strdel(upper);
+    string name = str("Joco");
+    printf("|%s| and its length %d\n", strget(name), len(name));
     return 0;
 }
