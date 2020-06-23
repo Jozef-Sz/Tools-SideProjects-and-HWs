@@ -77,24 +77,24 @@ int len(string arg);
 
 void strdel(string arg);
 
-// string strcopy(string arg);
+string strcopy(string arg);
 
-// int contains(string arg, const char* pattern);
+int contains(string arg, const char* pattern);
 
-// void replace(string arg, const char* pattern, const char* filling, int occurrences);
+void replace(string arg, const char* pattern, const char* filling, int occurrences);
 
 string strscan(const char* msg, ...);
 
-// string int_tostr(int number);
+string int_tostr(int number);
 
-// string double_tostr(double number);
+string double_tostr(double number);
 
-// int parse_int(string strnum);
+int parse_int(string strnum);
 
-// double parse_double(string strnum);
+double parse_double(string strnum);
 
-// void tolower_case(string arg);
+void tolower_case(string arg);
 
-// void toupper_case(string arg);
+void toupper_case(string arg);
 
 #endif

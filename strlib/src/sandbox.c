@@ -3,26 +3,15 @@
 
 int main() 
 {
-    string var = str("Buzz lightyear");
+    string var = str("Buzz lightyear is a cartoon toy");
     printf("|%s| ptr %x\n", strget(var), var->str);
 
-    strpush(var, " ");
+    replace(var, "is", "je", ALL);
     printf("|%s| ptr %x\n", strget(var), var->str);
 
-    strpush(var, "is the name of a cartoon toy");
+    replace(var, "lightyear", "SMALL STEP FOR A HUMAN", ALL);
     printf("|%s| ptr %x\n", strget(var), var->str);
 
-    string eh = str(" a sdkjfas");
-    stradd(var, eh);
-    printf("|%s| ptr %x\n", strget(var), var->str);
-
-    strpush(var, "is the name of a cartoon toy");
-    printf("|%s| ptr %x\n", strget(var), var->str);
-
-    stradd(var, eh);
-    printf("|%s| ptr %x\n", strget(var), var->str);
-
-    strdel(eh);
     strdel(var);
 
     return 0;
