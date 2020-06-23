@@ -13,6 +13,6 @@ int main()
     printf("|%s| ptr %x\n", strget(var), var->str);
 
     strdel(var);
-
+  
     return 0;
 }
