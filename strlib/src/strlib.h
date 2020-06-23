@@ -51,10 +51,12 @@ void reset_textcolor();
 
 typedef struct {
     char* str;
-    int* length;
-    int* capacity;
-    char* is_initialized;
-} string;
+    int length;
+    int capacity;
+    int index;
+} str_class;
+
+typedef str_class* string;
 
 
 void throw_error(const char* msg, ...);
