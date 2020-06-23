@@ -53,6 +53,7 @@ typedef struct {
     char* str;
     int length;
     int capacity;
+    int index;
 } str_class;
 
 typedef str_class* string;
@@ -62,19 +63,19 @@ void throw_error(const char* msg, ...);
 
 string str(const char* raw_s);
 
-// void strpush(string base, const char* tail);
+void strpush(string base, const char* tail);
 
-// void stradd(string base, string tail);
+void stradd(string base, string tail);
 
 const char* strget(string arg);
 
-// char charat(string arg, int index);
+char charat(string arg, int index);
 
-// string substr(string arg, int from, int to);
+string substr(string arg, int from, int to);
 
 int len(string arg);
 
-// void strdel(string arg);
+void strdel(string arg);
 
 // string strcopy(string arg);
 
@@ -82,7 +83,7 @@ int len(string arg);
 
 // void replace(string arg, const char* pattern, const char* filling, int occurrences);
 
-// string strscan(const char* msg, ...);
+string strscan(const char* msg, ...);
 
 // string int_tostr(int number);
 

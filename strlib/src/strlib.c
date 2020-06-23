@@ -148,6 +148,22 @@ typedef struct {
 
 GLOBAL_STRING_STRUCT GSS = { NULL, 0, 0 };
 
+void appendtoGSS(string s)
+{
+    if (GSS.cap == 0)
+    {
+        GSS.cap = 10;
+        GSS.strings = malloc(GSS.cap * (int)sizeof(string));
+    }
+    if (GSS.len + 1 > GSS.cap)
+    {
+        GSS.cap += 5;
+        GSS.strings = realloc(GSS.strings, GSS.cap * (int)sizeof(string));
+    }
+    GSS.strings[GSS.len] = s;
+    GSS.len++;
+}
+
 typedef struct {
 	int amount;
 	int* indexes;
@@ -155,108 +171,92 @@ typedef struct {
 
 string str(const char* raw_s)
 {
-    // Start with allocating 10 string places if GSS is empty
-    if (GSS.cap == 0)
-    {
-        printf("Initialized GSS\n");
-        GSS.cap = 10;
-        GSS.strings = malloc(GSS.cap * (int)sizeof(string));
-    }
-    printf("Pointer of GSS strings %x\n", GSS.strings);
-    
-    if (GSS.len + 1 > GSS.cap)
-    {
-        printf("GSS was small so resize was issued");
-        GSS.cap += 5;
-        GSS.strings = realloc(GSS.strings, GSS.cap * (int)sizeof(string));
-    }
-    
     string s = malloc(sizeof(str_class));
-    GSS.strings[GSS.len] = s;
-    GSS.len++;
+    s->index = GSS.len;
+    appendtoGSS(s);
 
     s->length = (int)strlen(raw_s);
     s->capacity = s->length + STR_BACKUP_SIZE;
     s->str = malloc(s->capacity * (int)sizeof(char));
     strcpy(s->str, raw_s);
-    printf("Returning pointer %x\n", s);
     return s;
 }
 
-// string strscan(const char* msg, ...)
-// {
-//     string s;
-//     va_list arg;
-//     va_start(arg, msg);
-//     char input_buffer[SCAN_BUFFER];
-//     s.length = malloc(sizeof(int));
-//     s.capacity = malloc(sizeof(int));
+string strscan(const char* msg, ...)
+{
+    va_list arg;
+    va_start(arg, msg);
+    char input_buffer[SCAN_BUFFER];
+    string s = malloc(sizeof(str_class));
+    s->index = GSS.len;
+    appendtoGSS(s);
+    
+    vfprintf(stdout, msg, arg);
+    scanf("%s", input_buffer);
+    s->length = (int)strlen(input_buffer);
+    s->capacity = s->length * STR_BACKUP_SIZE;
+    s->str = malloc(s->capacity * (int)sizeof(char));
+    strcpy(s->str, input_buffer);
+    va_end(arg);
+    return s;
+}
 
-//     vfprintf(stdout, msg, arg);
-//     scanf("%s", input_buffer);
-//     *s.length = (int)strlen(input_buffer);
-//     *s.capacity = *s.length * STR_BACKUP_SIZE;
-//     s.str = malloc(*s.capacity * sizeof(char));
-//     strcpy(s.str, input_buffer);
-//     s.is_initialized = "Initialized";
-//     va_end(arg);
-//     return s;
-// }
+void strpush(string base, const char* tail)
+{
+    size_t tail_length = strlen(tail);
+    /* (*base.capacity - 1) is because of the null termiantion.
+       I am not sure, if it's necessary, anyway it doesn't 
+       hurts even if it's not necessary. */
+    if (base->length + tail_length > base->capacity - 1)
+    {
+        base->length += (int)tail_length;
+        base->capacity = base->length + (int)STR_BACKUP_SIZE;
+        base->str = realloc(base->str, base->capacity);
+        if (base->str == NULL)
+            throw_error("Couldn't allocate memory for the string");
+        strcat(base->str, tail);
+    } 
+    else 
+    {
+        base->length = base->length + (int)tail_length;
+        strcat(base->str, tail);
+    }
+}
 
-// void strpush(string base, const char* tail)
-// {
-//     size_t tail_length = strlen(tail);
-//     /* (*base.capacity - 1) is because of the null termiantion.
-//        I am not sure, if it's necessary, anyway it doesn't 
-//        hurts even if it's not necessary. */
-//     if (*base.length + tail_length > *base.capacity - 1)
-//     {
-//         *base.length = *base.length + (int)tail_length;
-//         *base.capacity = *base.length + (int)STR_BACKUP_SIZE;
-//         base.str = realloc(base.str, *base.capacity);
-//         strcat(base.str, tail);
-//     } 
-//     else 
-//     {
-//         *base.length = *base.length + (int)tail_length;
-//         strcat(base.str, tail);
-//     }
-// }
+void stradd(string base, string tail)
+{
+    const char* str = tail->str;
+    strpush(base, str);
+}
 
-// void stradd(string base, string tail)
-// {
-//     const char* str = tail.str;
-//     strpush(base, str);
-// }
+char charat(string arg, int index)
+{
+    if (index < 0 || index > arg->length - 1)
+        throw_error("String index out of range");
+    return arg->str[index];
+}
 
-// char charat(string arg, int index)
-// {
-//     if (index < 0 || index > *arg.length - 1)
-//         throw_error("String index out of range");
-//     return arg.str[index];
-// }
-
-// string substr(string arg, int from, int to)
-// {
-//     if (from < 0 || from > *arg.length - 1) throw_error("String index out of range");
-//     if (to < 0 || to > *arg.length - 1) throw_error("String index out of range");
-//     if (from > to) throw_error("Cannot retrieve substring from index %d to index %d", from, to);
-//     string subs;
-//     subs.length = malloc(sizeof(int));
-//     subs.capacity = malloc(sizeof(int));
-//     *subs.length = to - from + 1;
-//     *subs.capacity = *subs.length + (int)STR_BACKUP_SIZE;
-//     subs.str = malloc(*subs.capacity * sizeof(char));
-//     int i = 0, ssindex = from;
-//     for (; i < *subs.length; i++)
-//     {
-//         subs.str[i] = arg.str[ssindex];
-//         ssindex++;
-//     }
-//     subs.str[i] = '\0';
-//     subs.is_initialized = "Initialized";
-//     return subs;
-// }
+string substr(string arg, int from, int to)
+{
+    if (from < 0 || from > arg->length - 1) throw_error("String index out of range");
+    if (to < 0 || to > arg->length - 1) throw_error("String index out of range");
+    if (from > to) throw_error("Cannot retrieve substring from index %d to index %d", from, to);
+    string subs;
+    subs.length = malloc(sizeof(int));
+    subs.capacity = malloc(sizeof(int));
+    *subs.length = to - from + 1;
+    *subs.capacity = *subs.length + (int)STR_BACKUP_SIZE;
+    subs.str = malloc(*subs.capacity * sizeof(char));
+    int i = 0, ssindex = from;
+    for (; i < *subs.length; i++)
+    {
+        subs.str[i] = arg.str[ssindex];
+        ssindex++;
+    }
+    subs.str[i] = '\0';
+    subs.is_initialized = "Initialized";
+    return subs;
+}
 
 // string strcopy(string arg)
 // {
@@ -475,13 +475,26 @@ string str(const char* raw_s)
 //     return atof(strnum.str);
 // }
 
-// void strdel(string arg) 
-// { 
-//     free(arg.str);
-//     free(arg.length);
-//     free(arg.capacity); 
-//     arg.is_initialized = NULL;
-// }
+void strdel(string arg) 
+{
+    int str_index = arg->index;
+    free(arg->str);
+    free(GSS.strings[arg->index]);
+
+    // Defragmenting GSS.strings
+    for (int i = str_index;  i < GSS.len - 1; i++)
+    {
+        GSS.strings[i] = GSS.strings[i+1];
+    }
+    GSS.strings[GSS.len - 1] = NULL;
+    GSS.len--;
+
+    if (GSS.len == 0)
+    {
+        free(GSS.strings);
+        GSS.cap = 0;
+    }
+}
 
 int len(string arg) { return arg->length; }
 
