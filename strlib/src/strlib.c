@@ -223,42 +223,10 @@ void strpush(string base, const char* tail)
     }
 }
 
-string strnpush(string base, const char* tail)
-{
-    size_t tail_length = strlen(tail);
-    /* (*base.capacity - 1) is because of the null termiantion.
-       I am not sure, if it's necessary, anyway it doesn't 
-       hurts even if it's not necessary. */
-    if (*base.length + tail_length > *base.capacity - 1)
-    {
-        *base.length = *base.length + (int)tail_length;
-        *base.capacity = *base.length + (int)STR_BACKUP_SIZE;
-        char* old_str_ptr = base.str;
-        base.str = realloc(base.str, *base.capacity);
-        if (base.str == NULL)
-        {
-            free(old_str_ptr);
-            throw_error("Couldn't allocate new memory for longer string.");
-        }
-        strcat(base.str, tail);
-        return base;
-    } 
-    
-    *base.length = *base.length + (int)tail_length;
-    strcat(base.str, tail);
-    return base;
-}
-
 void stradd(string base, string tail)
 {
     const char* str = tail->str;
     strpush(base, str);
-}
-
-string strnadd(string base, string tail)
-{
-    const char* str = tail.str;
-    return strnpush(base, str);
 }
 
 char charat(string arg, int index)
