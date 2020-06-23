@@ -25,7 +25,7 @@ Disclaimer, the last statement about memory is in the users responsibility to ha
 - [Notes](#notes)
 
 ### TYPES:
-* string - main type when using strings of strlib, struct holding string data and metadata
+* **string** - main type when using strings of strlib, struct holding string data and metadata
 
 
 ### FUNCTIONS:
@@ -134,7 +134,7 @@ Returns truthy value if the given pattern matches with a portion of the string, 
 ```C
 void strdel(string arg)
 ```
-Frees up the memory of a particular string. CAUTION: the string variable a.k.a. struct will be still available, but the string and it's length itself will be empty.
+Frees up the memory of a particular string. NOTE: every string should be deleted at the end of it's life cycle if you want to properly finish the program.
 * **arg** - string we want to free it's memory
 
 ---
