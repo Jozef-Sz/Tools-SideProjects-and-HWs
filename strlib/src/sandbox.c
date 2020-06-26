@@ -3,6 +3,11 @@
 
 int main() 
 {
+    string kaki = str("  Hello    ");
+    trim(kaki);
+    printf("|%s| len %d\n", strget(kaki), len(kaki));
+
+
     string var = str("Buzz lightyear is a cartoon toy");
     printf("|%s| ptr %x\n", strget(var), var->str);
 

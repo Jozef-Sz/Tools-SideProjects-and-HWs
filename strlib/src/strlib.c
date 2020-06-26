@@ -473,6 +473,33 @@ int parse_int(string strnum) { return atoi(strnum->str); }
 
 double parse_double(string strnum) { return atof(strnum->str); }
 
+void trimstart(string arg)
+{
+    while (strget(arg)[0] == ' ')
+    {
+        // Shift string to the left
+        for (int i = 0; i < len(arg); i++)
+            arg->str[i] = arg->str[i+1];
+        // Decrementing the length of the string
+        arg->length--;
+    }
+}
+
+void trimend(string arg)
+{
+    while (strget(arg)[len(arg)-1] == ' ')
+    {
+        arg->str[len(arg)-1] = '\0';
+        arg->length--;
+    }
+}
+
+void trim(string arg)
+{
+    trimstart(arg);
+    trimend(arg);
+}
+
 void strdel(string arg) 
 {
     int str_index = arg->index;

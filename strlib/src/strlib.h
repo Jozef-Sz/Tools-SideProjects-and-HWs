@@ -93,12 +93,17 @@ string int_tostr(int number);
 
 string double_tostr(double number);
 
-int parse_int(string strnum);
-
+int parse_int(string strnum); 
 double parse_double(string strnum);
 
 void tolower_case(string arg);
 
 void toupper_case(string arg);
+
+void trimstart(string arg);
+
+void trimend(string arg);
+
+void trim(string arg);
 
 #endif

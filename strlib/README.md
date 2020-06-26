@@ -120,6 +120,24 @@ void toupper_case(string arg)
 Changes every letter to upper case in the string
 * **arg** - any kind of string
 
+```C
+void trimstart(string arg)
+```
+Removes whitespace at the beginning of the string.
+* **arg** - any kind of string
+
+```C
+void trimend(string arg)
+```
+Removes whitespace from the end of the string.
+* **arg** - any kind of string
+
+```C
+void trim(string arg)
+```
+Removes whitespace from both sides of a string
+* **arg** - any kind of string
+
 ---
 #### String search
 ```C
@@ -196,9 +214,6 @@ Calling reset_textcolor resets text color to, which was before the first set_tex
 
 ## Upcoming features:
 * str_t() - creates a string from template just like printf does
-* trimstart() - removes whitespace from the beginning of a string 
-* trimend() - removes whitespace from the end of a string
-* trim() - removes whitespace from both sides of a string
 * strpop() - removes the last character and returns it
 * strdel_array() - frees a string arrays memory
 * print() - prints an arbitrary number of strings and char* without new line 
