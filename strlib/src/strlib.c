@@ -236,6 +236,15 @@ char charat(string arg, int index)
     return arg->str[index];
 }
 
+char strpop(string arg)
+{
+    if (arg->length == 0) return NULL;
+    char poped = arg->str[arg->length - 1];
+    arg->str[arg->length - 1] = '\0';
+    arg->length--;
+    return poped;
+}
+
 string substr(string arg, int from, int to)
 {
     if (from < 0 || from > arg->length - 1) throw_error("String index out of range");
@@ -519,6 +528,20 @@ void strdel(string arg)
         free(GSS.strings);
         GSS.cap = 0;
     }
+}
+
+void strdelall()
+{
+    // First delete all of the strings
+    for (int i = 0; i < GSS.len; i++)
+        free(GSS.strings[i]);
+
+    GSS.len = 0;
+
+    // Then delete the entire GSS strings array
+    free(GSS.strings);
+    GSS.cap = 0;
+
 }
 
 int len(string arg) { return arg->length; }

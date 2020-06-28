@@ -17,7 +17,8 @@ int main()
     replace(var, "lightyear", "SMALL STEP FOR A HUMAN", ALL);
     printf("|%s| ptr %x\n", strget(var), var->str);
 
-    strdel(var);
   
+    strdelall();
+
     return 0;
 }

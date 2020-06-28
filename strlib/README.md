@@ -155,6 +155,13 @@ void strdel(string arg)
 Frees up the memory of a particular string. NOTE: every string should be deleted at the end of it's life cycle if you want to properly finish the program.
 * **arg** - string we want to free it's memory
 
+```C
+void strdelall()
+```
+Frees the memory of all of the string instances. It comes in handy when we want to end the program we need to free the memory. 
+So it can be done with one function call, instead of calling strdel() on every string instance.
+* **takes no arguments**
+
 ---
 #### String conversion
 ```C
@@ -252,6 +259,9 @@ int main()
     strdel(mylastname);
     strdel(guestage);
     strdel(schedule);
+    
+    // Or simply just call:
+    // strdelall();
 
     return 0;
 }

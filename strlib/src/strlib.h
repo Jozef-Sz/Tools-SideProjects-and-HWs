@@ -75,11 +75,15 @@ const char* strget(string arg);
 
 char charat(string arg, int index);
 
+char strpop(string arg);
+
 string substr(string arg, int from, int to);
 
 int len(string arg);
 
 void strdel(string arg);
+
+void strdelall();
 
 string strcopy(string arg);
 
@@ -94,6 +98,7 @@ string int_tostr(int number);
 string double_tostr(double number);
 
 int parse_int(string strnum); 
+
 double parse_double(string strnum);
 
 void tolower_case(string arg);
