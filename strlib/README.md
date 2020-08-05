@@ -25,7 +25,7 @@ Disclaimer, the last statement about memory is in the users responsibility to ha
 - [Notes](#notes)
 
 ### TYPES:
-* string - main type when using strings of strlib, struct holding string data and metadata
+* **string** - main type when using strings of strlib, struct holding string data and metadata
 
 
 ### FUNCTIONS:
@@ -62,25 +62,9 @@ Is used for extending a string with raw text as "example" or with any const char
 * **tail** - text to be extended with 
 
 ```C
-string strnpush(string base, const char* tail)
-```
-This function does exatly the same operation as strpush() does, except this isn't modifying the existing string, but returns a modified one.
-Why? Short answer: when you want concatinate very very large string then you must use this function. Long answer: under the hood the string type is a struct, which contains a char* and when you are cancatinating really long string, you need to reallocate the existing memory. Reallocation at these sizes returns a completely new pointer and you have to somehow update the pointer in you project. So strnpush() returns that new pointer inside the string type and you just need to assign it. Example:<br/> `string pi_in_string = str("3.14");`<br/> `pi_in_string = strnpush(pi_in_string, "15926535(and another 100000 digits of pi)");` This will work<br/>
-`strpush(pi_in_string, "15926535(and another 100000 digits of pi)");` This won't work
-* **base** - some string to be extended
-* **tail** - text to be extended with 
-
-```C
 void stradd(string base, string tail)
 ```
 Is also used for extending string, but in this case with another string. It's only purpose is convenience, but you can as well use **strpush**(somestring, **strget**(otherstring)); and get the same result. 
-* **base** - some string to be extended
-* **tail** - string to be extended with
-
-```C
-string strnadd(string base, string tail)
-```
-Works the same way as stradd(), but this will return the modified value. Wondering why? Please read the docs of strnpush function.
 * **base** - some string to be extended
 * **tail** - string to be extended with
 
@@ -136,6 +120,24 @@ void toupper_case(string arg)
 Changes every letter to upper case in the string
 * **arg** - any kind of string
 
+```C
+void trimstart(string arg)
+```
+Removes whitespace at the beginning of the string.
+* **arg** - any kind of string
+
+```C
+void trimend(string arg)
+```
+Removes whitespace from the end of the string.
+* **arg** - any kind of string
+
+```C
+void trim(string arg)
+```
+Removes whitespace from both sides of a string
+* **arg** - any kind of string
+
 ---
 #### String search
 ```C
@@ -150,8 +152,15 @@ Returns truthy value if the given pattern matches with a portion of the string, 
 ```C
 void strdel(string arg)
 ```
-Frees up the memory of a particular string. CAUTION: the string variable a.k.a. struct will be still available, but the string and it's length itself will be empty.
+Frees up the memory of a particular string. NOTE: every string should be deleted at the end of it's life cycle if you want to properly finish the program.
 * **arg** - string we want to free it's memory
+
+```C
+void strdelall()
+```
+Frees the memory of all of the string instances. It comes in handy when we want to end the program we need to free the memory. 
+So it can be done with one function call, instead of calling strdel() on every string instance.
+* **takes no arguments**
 
 ---
 #### String conversion
@@ -212,9 +221,6 @@ Calling reset_textcolor resets text color to, which was before the first set_tex
 
 ## Upcoming features:
 * str_t() - creates a string from template just like printf does
-* trimstart() - removes whitespace from the beginning of a string 
-* trimend() - removes whitespace from the end of a string
-* trim() - removes whitespace from both sides of a string
 * strpop() - removes the last character and returns it
 * strdel_array() - frees a string arrays memory
 * print() - prints an arbitrary number of strings and char* without new line 
@@ -253,6 +259,9 @@ int main()
     strdel(mylastname);
     strdel(guestage);
     strdel(schedule);
+    
+    // Or simply just call:
+    // strdelall();
 
     return 0;
 }

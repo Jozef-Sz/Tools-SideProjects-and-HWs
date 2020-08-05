@@ -3,30 +3,22 @@
 
 int main() 
 {
-    string number = str("45");
-    printf("From string %s, to integer %d\n", strget(number), parse_int(number));
+    string kaki = str("  Hello    ");
+    trim(kaki);
+    printf("|%s| len %d\n", strget(kaki), len(kaki));
 
-    strpush(number, "hello");
-    printf("From string %s, to integer %d\n", strget(number), parse_int(number));
 
-    string decimal = str("34343.54453");
-    printf("From string %s, to double %f\n", strget(decimal), parse_double(decimal));
+    string var = str("Buzz lightyear is a cartoon toy");
+    printf("|%s| ptr %x\n", strget(var), var->str);
 
-    strpush(decimal, "asdgadsfg");
-    printf("From string %s, to double %f\n", strget(decimal), parse_double(decimal));
+    replace(var, "is", "je", ALL);
+    printf("|%s| ptr %x\n", strget(var), var->str);
 
-    string upper = str("NEW BALANCE 547");
-    tolower_case(upper);
-    printf("|%s|\n", strget(upper));
+    replace(var, "lightyear", "SMALL STEP FOR A HUMAN", ALL);
+    printf("|%s| ptr %x\n", strget(var), var->str);
 
-    toupper_case(upper);
-    printf("Back to upper case |%s|\n", strget(upper));
+  
+    strdelall();
 
-    upper = strnpush(upper, "as");
-    printf("|%s|\n", strget(upper));
-
-    strdel(number);
-    strdel(decimal);
-    strdel(upper);
     return 0;
 }

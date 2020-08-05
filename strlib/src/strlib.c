@@ -141,39 +141,62 @@ void reset_textcolor() { printf("\x1b[0m"); }
 // ----------------------------- STRLIB SECTION ----------------------------
 
 typedef struct {
+    string* strings;
+    int len;
+    int cap;
+} GLOBAL_STRING_STRUCT;
+
+GLOBAL_STRING_STRUCT GSS = { NULL, 0, 0 };
+
+void appendtoGSS(string s)
+{
+    if (GSS.cap == 0)
+    {
+        GSS.cap = 10;
+        GSS.strings = malloc(GSS.cap * (int)sizeof(string));
+    }
+    if (GSS.len + 1 > GSS.cap)
+    {
+        GSS.cap += 5;
+        GSS.strings = realloc(GSS.strings, GSS.cap * (int)sizeof(string));
+    }
+    GSS.strings[GSS.len] = s;
+    GSS.len++;
+}
+
+typedef struct {
 	int amount;
 	int* indexes;
-}finding;
+} finding;
 
 string str(const char* raw_s)
 {
-    string s;
-    s.length = malloc(sizeof(int));
-    s.capacity = malloc(sizeof(int));
-    *s.length = (int)strlen(raw_s);
-    *s.capacity = *s.length + (int)STR_BACKUP_SIZE;
-    s.str = malloc(*s.capacity * sizeof(char));
-    strcpy(s.str, raw_s);
-    s.is_initialized = "Initialized";
+    string s = malloc(sizeof(str_class));
+    s->index = GSS.len;
+    appendtoGSS(s);
+
+    s->length = (int)strlen(raw_s);
+    s->capacity = s->length + STR_BACKUP_SIZE;
+    s->str = malloc(s->capacity * (int)sizeof(char));
+    strcpy(s->str, raw_s);
     return s;
 }
 
 string strscan(const char* msg, ...)
 {
-    string s;
     va_list arg;
     va_start(arg, msg);
     char input_buffer[SCAN_BUFFER];
-    s.length = malloc(sizeof(int));
-    s.capacity = malloc(sizeof(int));
-
+    string s = malloc(sizeof(str_class));
+    s->index = GSS.len;
+    appendtoGSS(s);
+    
     vfprintf(stdout, msg, arg);
     scanf("%s", input_buffer);
-    *s.length = (int)strlen(input_buffer);
-    *s.capacity = *s.length * STR_BACKUP_SIZE;
-    s.str = malloc(*s.capacity * sizeof(char));
-    strcpy(s.str, input_buffer);
-    s.is_initialized = "Initialized";
+    s->length = (int)strlen(input_buffer);
+    s->capacity = s->length * STR_BACKUP_SIZE;
+    s->str = malloc(s->capacity * (int)sizeof(char));
+    strcpy(s->str, input_buffer);
     va_end(arg);
     return s;
 }
@@ -184,102 +207,80 @@ void strpush(string base, const char* tail)
     /* (*base.capacity - 1) is because of the null termiantion.
        I am not sure, if it's necessary, anyway it doesn't 
        hurts even if it's not necessary. */
-    if (*base.length + tail_length > *base.capacity - 1)
+    if (base->length + tail_length > base->capacity - 1)
     {
-        *base.length = *base.length + (int)tail_length;
-        *base.capacity = *base.length + (int)STR_BACKUP_SIZE;
-        char* old_str_ptr = base.str;
-        base.str = realloc(base.str, *base.capacity);
-        if (base.str == NULL || base.str != old_str_ptr)
-            throw_error("Couldn't allocate new memory for longer string.\n         Please consider using strnpush instead.");
-        strcat(base.str, tail);
+        base->length += (int)tail_length;
+        base->capacity = base->length + (int)STR_BACKUP_SIZE;
+        base->str = realloc(base->str, base->capacity);
+        if (base->str == NULL)
+            throw_error("Couldn't allocate memory for the string");
+        strcat(base->str, tail);
     } 
     else 
     {
-        *base.length = *base.length + (int)tail_length;
-        strcat(base.str, tail);
+        base->length = base->length + (int)tail_length;
+        strcat(base->str, tail);
     }
-}
-
-string strnpush(string base, const char* tail)
-{
-    size_t tail_length = strlen(tail);
-    /* (*base.capacity - 1) is because of the null termiantion.
-       I am not sure, if it's necessary, anyway it doesn't 
-       hurts even if it's not necessary. */
-    if (*base.length + tail_length > *base.capacity - 1)
-    {
-        *base.length = *base.length + (int)tail_length;
-        *base.capacity = *base.length + (int)STR_BACKUP_SIZE;
-        char* old_str_ptr = base.str;
-        base.str = realloc(base.str, *base.capacity);
-        if (base.str == NULL)
-        {
-            free(old_str_ptr);
-            throw_error("Couldn't allocate new memory for longer string.");
-        }
-        strcat(base.str, tail);
-        return base;
-    } 
-    
-    *base.length = *base.length + (int)tail_length;
-    strcat(base.str, tail);
-    return base;
 }
 
 void stradd(string base, string tail)
 {
-    const char* str = tail.str;
+    const char* str = tail->str;
     strpush(base, str);
-}
-
-string strnadd(string base, string tail)
-{
-    const char* str = tail.str;
-    return strnpush(base, str);
 }
 
 char charat(string arg, int index)
 {
-    if (index < 0 || index > *arg.length - 1)
+    if (index < 0 || index > arg->length - 1)
         throw_error("String index out of range");
-    return arg.str[index];
+    return arg->str[index];
+}
+
+char strpop(string arg)
+{
+    if (arg->length == 0) return NULL;
+    char poped = arg->str[arg->length - 1];
+    arg->str[arg->length - 1] = '\0';
+    arg->length--;
+    return poped;
 }
 
 string substr(string arg, int from, int to)
 {
-    if (from < 0 || from > *arg.length - 1) throw_error("String index out of range");
-    if (to < 0 || to > *arg.length - 1) throw_error("String index out of range");
+    if (from < 0 || from > arg->length - 1) throw_error("String index out of range");
+    if (to < 0 || to > arg->length - 1) throw_error("String index out of range");
     if (from > to) throw_error("Cannot retrieve substring from index %d to index %d", from, to);
-    string subs;
-    subs.length = malloc(sizeof(int));
-    subs.capacity = malloc(sizeof(int));
-    *subs.length = to - from + 1;
-    *subs.capacity = *subs.length + (int)STR_BACKUP_SIZE;
-    subs.str = malloc(*subs.capacity * sizeof(char));
+    
+    string subs = malloc(sizeof(str_class));
+    subs->index = GSS.len;
+    appendtoGSS(subs);
+    
+    subs->length = to - from + 1;
+    subs->capacity = subs->length + (int)STR_BACKUP_SIZE;
+    subs->str = malloc(subs->capacity * sizeof(char));
     int i = 0, ssindex = from;
-    for (; i < *subs.length; i++)
+    for (; i < subs->length; i++)
     {
-        subs.str[i] = arg.str[ssindex];
+        subs->str[i] = arg->str[ssindex];
         ssindex++;
     }
-    subs.str[i] = '\0';
-    subs.is_initialized = "Initialized";
+    subs->str[i] = '\0';
     return subs;
 }
 
 string strcopy(string arg)
 {
-    string copy;
-    copy.length = malloc(sizeof(int));
-    copy.capacity = malloc(sizeof(int));
-    *copy.length = *arg.length;
-    *copy.capacity = *arg.capacity;
-    copy.str = malloc(*copy.capacity * sizeof(char));
-    strcpy(copy.str, arg.str);
-    copy.is_initialized = "Initialized";
+    string copy = malloc(sizeof(str_class));
+    copy->index = GSS.len;
+    appendtoGSS(copy);
+
+    copy->length = arg->length;
+    copy->capacity = arg->capacity;
+    copy->str = malloc(copy->capacity * (int)sizeof(char));
+    strcpy(copy->str, arg->str);
     return copy;
 }
+
 /* Returns a structure, which consists of a number of occurrances
    and an integer array of indexes where the found pattern begins. */
 finding search(const char* searchable, const char* pattern)
@@ -315,17 +316,17 @@ finding search(const char* searchable, const char* pattern)
 
 int contains(string arg, const char* pattern)
 {
-    finding res = search(arg.str, pattern);
+    finding res = search(arg->str, pattern);
     if (res.amount == 0) return 0;
     return 1;
 }
 
 void replace(string arg, const char* pattern, const char* filling, int occurrences)
 {
-    finding res = search(arg.str, pattern);
+    finding res = search(arg->str, pattern);
     if (res.amount == 0) return;
     int replacements;
-    if (occurrences == 0)
+    if (occurrences == 0) // Zero means all
         replacements = res.amount;
     else if (occurrences > res.amount)
     {
@@ -342,7 +343,7 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
             int str_index = res.indexes[i];
             for(int j = 0; j < (int)strlen(filling); j++)
             {
-                arg.str[str_index] = filling[j];
+                arg->str[str_index] = filling[j];
                 str_index++;
             }
         }
@@ -350,19 +351,18 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
     else
     {
         string copy = strcopy(arg);
-        *arg.length = *arg.length - replacements * (int)strlen(pattern) + 
+        arg->length = arg->length - replacements * (int)strlen(pattern) + 
                        replacements * (int)strlen(filling);
-		*arg.capacity = *arg.length + (int)STR_BACKUP_SIZE;
-		const char* old_str = copy.str;
-        const char* old_str_ptr = arg.str;
-		arg.str = realloc(arg.str, *arg.capacity * sizeof(char));
-        if (arg.str == NULL || arg.str != old_str_ptr)
-            throw_error("Couldn't allocate new memory for longer string.\n         Please make na issue on https://github.com/Jozef-Sz/Tools-SideProjects-and-HWs with label strlib.");
+		arg->capacity = arg->length + (int)STR_BACKUP_SIZE;
+		const char* old_str = copy->str;
+		arg->str = realloc(arg->str, arg->capacity * (int)sizeof(char));
+        if (arg->str == NULL)
+            throw_error("Couldn't allocate memory for the string");
 
 		int old_str_index = 0;
         int new_str_index = 0;
         int replaces_index = 0;
-        while (new_str_index < *arg.length)
+        while (new_str_index < arg->length)
         {
             if (old_str_index == res.indexes[replaces_index])
             {
@@ -370,46 +370,46 @@ void replace(string arg, const char* pattern, const char* filling, int occurrenc
                 {
                     for (int i = 0; i < (int)strlen(filling); i++)
                     {
-                        arg.str[new_str_index] = filling[i];
+                        arg->str[new_str_index] = filling[i];
                         new_str_index++;
                     }
                     old_str_index += (int)strlen(pattern);
                     replaces_index++;
                 }
-                arg.str[new_str_index] = old_str[old_str_index];
+                arg->str[new_str_index] = old_str[old_str_index];
                 old_str_index++;
                 new_str_index++;
             }
             else 
             {
-                arg.str[new_str_index] = old_str[old_str_index];
+                arg->str[new_str_index] = old_str[old_str_index];
                 old_str_index++;
                 new_str_index++;
             }
         }
-        arg.str[new_str_index] = '\0';
+        arg->str[new_str_index] = '\0';
         strdel(copy);
     }
 }
 
 void tolower_case(string arg)
 {
-    for (int i = 0; i < *arg.length; i++)
+    for (int i = 0; i < arg->length; i++)
     {
-        if (arg.str[i] >= 'A' && arg.str[i] <= 'Z')
+        if (arg->str[i] >= 'A' && arg->str[i] <= 'Z')
         {
-            arg.str[i] += 32;
+            arg->str[i] += 32;
         }
     }
 }
 
 void toupper_case(string arg)
 {
-    for (int i = 0; i < *arg.length; i++)
+    for (int i = 0; i < arg->length; i++)
     {
-        if (arg.str[i] >= 'a' && arg.str[i] <= 'z')
+        if (arg->str[i] >= 'a' && arg->str[i] <= 'z')
         {
-            arg.str[i] -= 32;
+            arg->str[i] -= 32;
         }
     }
 }
@@ -429,36 +429,37 @@ int get_int_length(int nu)
 
 string int_tostr(int number)
 {
-    string s;
-    s.length = malloc(sizeof(int));
-    s.capacity = malloc(sizeof(int));
+    string s = malloc(sizeof(str_class));
+    s->index = GSS.len;
+    appendtoGSS(s);
+
     if (number < 0)
     {
         // Plus 1, because of the minus sign.
-        *s.length = get_int_length(abs(number)) + 1;
-        *s.capacity = *s.length + STR_BACKUP_SIZE;
-        s.str = malloc(*s.capacity * sizeof(char));
-        sprintf(s.str, "%d", number);
+        s->length = get_int_length(abs(number)) + 1;
+        s->capacity = s->length + (int)STR_BACKUP_SIZE;
+        s->str = malloc(s->capacity * sizeof(char));
+        sprintf(s->str, "%d", number);
     }
     else 
     {
-        *s.length = get_int_length(number);
-        *s.capacity = *s.length + STR_BACKUP_SIZE;
-        s.str = malloc(*s.capacity * sizeof(char));
-        sprintf(s.str, "%d", number);
+        s->length = get_int_length(number);
+        s->capacity = s->length + (int)STR_BACKUP_SIZE;
+        s->str = malloc(s->capacity * sizeof(char));
+        sprintf(s->str, "%d", number);
     }
-    s.is_initialized = "Initialized";
+
     return s;
 }
 
 string double_tostr(double number)
 {
-    string s;
-    s.length = malloc(sizeof(int));
-    s.capacity = malloc(sizeof(int));
+    string s = malloc(sizeof(str_class));
+    s->index = GSS.len;
+    appendtoGSS(s);
+
     // The largest possible long double takes 4934 characters 
     // including the dot and possible minus sign.
-    // char* tmp = malloc(4934 * sizeof(char));
     char tmp[4934];
     sprintf(tmp, "%f", number);
 
@@ -469,27 +470,80 @@ string double_tostr(double number)
         tmp[last_char] = '\0';
         last_char--;
     }
-    *s.length = (int)strlen(tmp);
-    *s.capacity = *s.length + STR_BACKUP_SIZE;
-    s.str = malloc(*s.capacity * sizeof(char));
-    strcpy(s.str, tmp);
-    s.is_initialized = "Initialized";
-    // free(tmp);
+    s->length = (int)strlen(tmp);
+    s->capacity = s->length + (int)STR_BACKUP_SIZE;
+    s->str = malloc(s->capacity * (int)sizeof(char));
+    strcpy(s->str, tmp);
+
     return s;
 }
 
-void strdel(string arg) 
-{ 
-    free(arg.str);
-    free(arg.length);
-    free(arg.capacity); 
-    arg.is_initialized = NULL;
+int parse_int(string strnum) { return atoi(strnum->str); }
+
+double parse_double(string strnum) { return atof(strnum->str); }
+
+void trimstart(string arg)
+{
+    while (strget(arg)[0] == ' ')
+    {
+        // Shift string to the left
+        for (int i = 0; i < len(arg); i++)
+            arg->str[i] = arg->str[i+1];
+        // Decrementing the length of the string
+        arg->length--;
+    }
 }
 
-int parse_int(string strnum) { return atoi(strnum.str); }
+void trimend(string arg)
+{
+    while (strget(arg)[len(arg)-1] == ' ')
+    {
+        arg->str[len(arg)-1] = '\0';
+        arg->length--;
+    }
+}
 
-double parse_double(string strnum) { return atof(strnum.str); }
+void trim(string arg)
+{
+    trimstart(arg);
+    trimend(arg);
+}
 
-int len(string arg) { return *arg.length; }
+void strdel(string arg) 
+{
+    int str_index = arg->index;
+    free(arg->str);
+    free(GSS.strings[arg->index]);
 
-const char* strget(string arg) { return arg.str; }
+    // Defragmenting GSS.strings
+    for (int i = str_index;  i < GSS.len - 1; i++)
+    {
+        GSS.strings[i] = GSS.strings[i+1];
+    }
+    GSS.strings[GSS.len - 1] = NULL;
+    GSS.len--;
+
+    if (GSS.len == 0)
+    {
+        free(GSS.strings);
+        GSS.cap = 0;
+    }
+}
+
+void strdelall()
+{
+    // First delete all of the strings
+    for (int i = 0; i < GSS.len; i++)
+        free(GSS.strings[i]);
+
+    GSS.len = 0;
+
+    // Then delete the entire GSS strings array
+    free(GSS.strings);
+    GSS.cap = 0;
+
+}
+
+int len(string arg) { return arg->length; }
+
+const char* strget(string arg) { return arg->str; }
