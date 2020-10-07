@@ -122,9 +122,10 @@ from math import sin, radians, pi
 # 4.12 Exercises
 # Exercise 4.2
 def polyline(t, n, length, angle):
-  for i in range(n):
+  for _ in range(n):
     t.fd(length)
     t.lt(angle)
+
 
 def arc(t, r, angle):
   arc_length = 2 * pi * r * angle / 360
@@ -133,27 +134,65 @@ def arc(t, r, angle):
   step_angle = angle / n
   polyline(t, n, step_length, step_angle)
 
+
+def perpendicular_arc(t, height, angle):
+  r =  (height / 2) / sin(radians(angle / 2))
+  arc(t, r, angle)
+
+
 def petal(t, r, angle):
-  for i in range(2):
+  for _ in range(2):
     arc(t, r, angle)
     t.lt(180 - angle)
 
+
 def flower_stem(t, height, angle):
-  r =  (height / 2) / sin(radians(angle / 2))
   t.rt(90 + angle / 2)
-  arc(t, r, angle)
+  perpendicular_arc(t, height, angle)
   t.lt(180 - angle / 2)
 
-# Final function
-def flower(t, n_petal, r_petal, angle_petal, height_stem, angle_stem):
-  for j in range(n_petal):
+
+def flower_leafs(t, length, width, angle_ground):
+  t.lt(90 - angle_ground - width / 2)
+  for _ in range(2):
+    perpendicular_arc(t, length, width)
+    t.lt(180 - width)
+
+  t.rt(90 - angle_ground - width / 2)
+  t.rt(90 - angle_ground + width / 2)
+  for _ in range(2):
+    perpendicular_arc(t, length, width)
+    t.lt(180 - width)
+
+  t.lt(90 - angle_ground + width / 2)
+
+
+def move_right(t, d):
+  t.pu()
+  t.rt(90)
+  t.fd(d)
+  t.pd()
+
+
+def flower(t, n_petal, r_petal, angle_petal, height_stem, angle_stem, length_leaf, width_leaf, angle_ground):
+  for _ in range(n_petal):
     petal(t, r_petal, angle_petal)
     t.lt(360 / n_petal)
   flower_stem(t, height_stem, angle_stem)
+  flower_leafs(t, length_leaf, width_leaf, angle_ground)
+  t.pu()
+  t.forward(height_stem)
+  t.pd()
+
 
 
 bob = turtle.Turtle()
 
-bob.speed(0)
-flower(bob, n_petal=5, r_petal=80, angle_petal=45, height_stem=150, angle_stem=40)
+# bob.speed(0)
+bob._tracer(0)
+flower(bob, n_petal=7, r_petal=80, angle_petal=55, height_stem=150, angle_stem=80, length_leaf=50, width_leaf=80, angle_ground=45)
+move_right(bob, 200)
+flower(bob, n_petal=10, r_petal=60, angle_petal=60, height_stem=300, angle_stem=50, length_leaf=150, width_leaf=10, angle_ground=75)
+move_right(bob, 200)
+flower(bob, n_petal=20, r_petal=300, angle_petal=10, height_stem=165, angle_stem=65, length_leaf=150, width_leaf=120, angle_ground=45)
 turtle.done()
