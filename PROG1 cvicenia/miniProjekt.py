@@ -119,8 +119,7 @@ from math import sin, radians, pi
 # arc(bob, 120, 90)
 
 
-# 4.12 Exercises
-# Exercise 4.2
+# Mini Projekt
 def polyline(t, n, length, angle):
   for _ in range(n):
     t.fd(length)
@@ -156,9 +155,7 @@ def perpendicular_arc(t, height, angle):
   height: distance between the ends of the arc
   angle:  sets the depth of the curve
   """
-  # Calculates "preponu pravouhleho trojuholnika v kruhu" a.k.a radius of the circle
   r =  (height / 2) / sin(radians(angle / 2))
-  # Draw an arc
   arc(t, r, angle)
 
 
@@ -170,11 +167,8 @@ def flower_stem(t, height, angle):
   height: height of the stem from the center of flower, to the bottom of the stem
   angle:  angle of the curve in stem
   """
-  # Set start position
   t.rt(90 + angle / 2)
-  # Draw an arc with it's end points aligned on top of each other
   perpendicular_arc(t, height, angle)
-  # Reset position
   t.lt(180 - angle / 2)
 
 
@@ -187,21 +181,16 @@ def flower_leafs(t, length, width, angle_ground):
   width:        width of leafs
   angle_ground: relative angle of leafs from the ground
   """
-  # Set t to start position for drawing
   t.lt(90 - angle_ground - width / 2)
-  # Draw a leaf with two arcs
   for _ in range(2):
     perpendicular_arc(t, length, width)
     t.lt(180 - width)
 
-  # Set t to start position for second leaf
   t.rt(180 - 2 * angle_ground)
-  # Draw a leaf with two arcs
   for _ in range(2):
     perpendicular_arc(t, length, width)
     t.lt(180 - width)
 
-  # Reset turtle position
   t.lt(-angle_ground + width / 2)
 
 
@@ -233,15 +222,11 @@ def flower(t, n_petal, r_petal, angle_petal, height_stem, angle_stem, length_lea
   width_leaf:   width of leafs
   angle_ground: relative angle of leafs from the ground
   """
-  # Draw petals
   for _ in range(n_petal):
     petal(t, r_petal, angle_petal)
     t.lt(360 / n_petal)
-  # Draw stem
   flower_stem(t, height_stem, angle_stem)
-  # Draw leafs
   flower_leafs(t, length_leaf, width_leaf, angle_ground)
-  # Reset turtle position
   move(t, 0, height_stem)
 
 
@@ -263,7 +248,7 @@ flower(
   angle_stem=95, 
   length_leaf=50, 
   width_leaf=80, 
-  angle_ground=45
+  angle_ground=0
 )
 
 move(bob, 200)
