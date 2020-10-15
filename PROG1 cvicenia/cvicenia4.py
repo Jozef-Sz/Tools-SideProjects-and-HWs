@@ -1,5 +1,3 @@
-import turtle
-
 # ----- Uloha 1 -----
 def numbers_to():
   n = int(input("Cisla od 1 po: "))
@@ -161,4 +159,84 @@ def test_prvociselnosti(a):
 
 
 # ----- Uloha 14 -----
-# Maybe later I'll finish
+def pohyb_veze(x1, y1, x2, y2):
+  if (((x1 < 1) or (x1 > 8)) or ((y1 < 1) or ( y1 > 8)) or 
+      ((x2 < 1) or (x2 > 8)) or ((y2 < 1) or ( y2 > 8))):
+    raise ValueError("parametre musia nadobudat hodnotu z monoziny <1, 8>")  
+  
+  if x1 == x2 or y1 == y2:
+    return True
+  
+  return False
+
+
+# print(pohyb_veze(4, 4, 5, 5))
+# print(pohyb_veze(4, 4, 5, 4))
+# print(pohyb_veze(4, 4, 5, 3))
+# print(pohyb_veze(4, 4, 4, 5))
+# print(pohyb_veze(4, 4, 3, 5))
+# print(pohyb_veze(4, 4, 4, 3))
+# print(pohyb_veze(4, 4, 3, 4))
+
+
+# ----- Uloha 15 -----
+def is_black(x, y):
+  if x % 2 == 0 and y % 2 == 0:
+    return True
+  elif x % 2 != 0 and y % 2 != 0:
+    return True
+  else:
+    return False
+
+
+def rovnaka_farba(x1, y1, x2, y2):
+  if (((x1 < 1) or (x1 > 8)) or ((y1 < 1) or ( y1 > 8)) or 
+      ((x2 < 1) or (x2 > 8)) or ((y2 < 1) or ( y2 > 8))):
+    raise ValueError("parametre musia nadobudat hodnotu z monoziny <1, 8>")
+  
+  if not(is_black(x1, y1) != is_black(x2, y2)):
+    return True
+  return False
+
+
+# print(rovnaka_farba(1, 1, 2, 6))
+# print(rovnaka_farba(2, 2, 2, 5))
+# print(rovnaka_farba(2, 2, 2, 4))
+# print(rovnaka_farba(2, 3, 3, 2))
+# print(rovnaka_farba(2, 3, 7, 8))
+# print(rovnaka_farba(2, 3, 8, 8))
+# print(rovnaka_farba(5, 7, 5, 7))
+# print(rovnaka_farba(2, 6, 3, 1))
+
+
+# ----- Uloha 16 -----
+from math import sqrt
+
+def pohyb_krala(x1, y1, x2, y2):
+  if (((x1 < 1) or (x1 > 8)) or ((y1 < 1) or ( y1 > 8)) or 
+      ((x2 < 1) or (x2 > 8)) or ((y2 < 1) or ( y2 > 8))):
+    raise ValueError("parametre musia nadobudat hodnotu z monoziny <1, 8>")
+
+  vzdialenost = sqrt((x1 - x2)**2 + (y1 - y2)**2)
+  if vzdialenost <= sqrt(2):
+    return True
+  return False
+
+
+# print(pohyb_krala(8, 1, 1, 1))
+# print(pohyb_krala(8, 1, 1, 8))
+# print(pohyb_krala(8, 1, 8, 8))
+# print(pohyb_krala(1, 1, 1, 2))
+# print(pohyb_krala(1, 1, 2, 2))
+# print(pohyb_krala(1, 1, 2, 1))
+# print(pohyb_krala(4, 4, 6, 6))
+# print(pohyb_krala(4, 4, 2, 2))
+
+
+# ----- Uloha 17 -----
+def pohyb_strelca(x1, y1, x2, y2):
+  if (((x1 < 1) or (x1 > 8)) or ((y1 < 1) or ( y1 > 8)) or 
+      ((x2 < 1) or (x2 > 8)) or ((y2 < 1) or ( y2 > 8))):
+    raise ValueError("parametre musia nadobudat hodnotu z monoziny <1, 8>")
+
+  #Finish later
