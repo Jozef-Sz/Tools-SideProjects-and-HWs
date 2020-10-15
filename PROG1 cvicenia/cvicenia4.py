@@ -238,5 +238,51 @@ def pohyb_strelca(x1, y1, x2, y2):
   if (((x1 < 1) or (x1 > 8)) or ((y1 < 1) or ( y1 > 8)) or 
       ((x2 < 1) or (x2 > 8)) or ((y2 < 1) or ( y2 > 8))):
     raise ValueError("parametre musia nadobudat hodnotu z monoziny <1, 8>")
+  
+  if abs(x1 - x2) == abs(y1 - y2):
+    return True
+  return False
 
-  #Finish later
+
+# print(pohyb_strelca(4, 4, 5, 5))
+# print(pohyb_strelca(4, 4, 5, 4))
+# print(pohyb_strelca(4, 4, 5, 3))
+# print(pohyb_strelca(4, 4, 4, 5))
+# print(pohyb_strelca(4, 4, 3, 5))
+# print(pohyb_strelca(4, 4, 4, 3))
+# print(pohyb_strelca(4, 4, 3, 4))
+
+
+# ----- Uloha 18 -----
+def pohyb_damy(x1, y1, x2, y2):
+  if (((x1 < 1) or (x1 > 8)) or ((y1 < 1) or ( y1 > 8)) or 
+      ((x2 < 1) or (x2 > 8)) or ((y2 < 1) or ( y2 > 8))):
+    raise ValueError("parametre musia nadobudat hodnotu z monoziny <1, 8>")
+  if pohyb_veze(x1, y1, x2, y2) or pohyb_strelca(x1, y1, x2, y2):
+    return True
+  return False
+
+
+# print(pohyb_damy(1, 1, 2, 2))
+# print(pohyb_damy(1, 1, 2, 3))
+# print(pohyb_damy(5, 6, 3, 3))
+# print(pohyb_damy(3, 3, 1, 1))
+# print(pohyb_damy(6, 5, 2, 5))
+
+
+# ----- Uloha 19 -----
+def pohyb_jazdca(x1, y1, x2, y2):
+  if (((x1 < 1) or (x1 > 8)) or ((y1 < 1) or ( y1 > 8)) or 
+      ((x2 < 1) or (x2 > 8)) or ((y2 < 1) or ( y2 > 8))):
+    raise ValueError("parametre musia nadobudat hodnotu z monoziny <1, 8>")
+
+  if abs((x1 - x2) * (y1 - y2)) == 2:
+    return True
+  return False
+
+
+print(pohyb_jazdca(1, 1, 1, 4))
+print(pohyb_jazdca(1, 1, 8, 8))
+print(pohyb_jazdca(2, 4, 3, 2))
+print(pohyb_jazdca(5, 2, 4, 4))
+print(pohyb_jazdca(2, 8, 3, 7))
