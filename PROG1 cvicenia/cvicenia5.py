@@ -88,6 +88,18 @@ def sucet_prvocisel(n):
 
 # ------- Uloha 7 -------
 # Watch video [x]
+def premiestni(z, s, do):
+  print(f"Premiestni disk z {z} do {s}")
+  print(f"Premiestni disk z {s} do {do}")
+
+def tower_of_hanoi(pocet_diskov, z, pomocne_miesto, do):
+  if pocet_diskov == 0:
+    return
+  tower_of_hanoi(pocet_diskov - 1, z, do, pomocne_miesto)
+  print(f"Premiestni disk z {z} do {do}")
+  tower_of_hanoi(pocet_diskov - 1, pomocne_miesto, z, do)
+
+# tower_of_hanoi(4, "A", "B", "C")
 
 
 # ------- Uloha 8 -------
@@ -99,9 +111,75 @@ def is_palindrome(word):
   return False
 
 
-print(is_palindrome("noon"))
+# print(is_palindrome("noon"))
 # print(is_palindrome("moon"))
 
 
 # ------- Uloha 9 -------
+def is_power(a, b):
+  if a <= 0 or b <= 0:
+    raise ValueError("a, b musia patrit do mnoziny N")
+  if a < b and a != 1:
+    return False
+  if a // b == 0:
+    return True
+  if a % b == 0:
+    return is_power(a / b, b)
+  return False
 
+# print(is_power(8, 2))
+# print(is_power(9, 2))
+# print(is_power(16, 4))
+# print(is_power(32, 2))
+# print(is_power(3, 4))
+
+
+# ------- Uloha 10 -------
+def gcd(a, b):
+  if b == 0:
+    return a
+  return gcd(b, a % b)
+
+# print(gcd(30, 20))
+# prtin(gcd(8, 12))
+
+
+# ------- Uloha 11 -------
+import turtle
+
+def koch(t, length):
+  # Zadanie znie ze ked 
+  # x < 3, ale v tom pripade 
+  # strany vzoru budu 
+  # kratke preto davam 15
+  if length < 15:
+    t.fd(length)
+  else:
+    koch(t, length / 3)
+    t.lt(60)
+    koch(t, length / 3)
+    t.rt(120)
+    koch(t, length / 3)
+    t.lt(60)
+    koch(t, length / 3)
+
+
+def snowflake(t, length):
+  for _ in range(3):
+    koch(t, length)
+    t.rt(120)
+  
+# ------------------------
+bob = turtle.Turtle()
+
+bob.speed(0)
+
+bob.pu()
+bob.setpos(-350, 200)
+bob.pd()
+
+# koch(bob, 700)
+snowflake(bob, 700)
+
+turtle.done()
+# ------------------------
