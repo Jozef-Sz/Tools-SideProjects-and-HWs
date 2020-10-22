@@ -38,6 +38,8 @@ def minimum_troch(a, b, c):
 
 
 # ----- Uloha 5 -----
+import turtle
+
 def polygon(n, len):
   for _ in range(n):
     turtle.fd(len)
@@ -60,20 +62,16 @@ def menu():
 def pocet_rovnakych(a, b, c):
   if a == b and b == c:
     return 3
-  elif a == b:
-    return 2
-  elif b == c:
-    return 2
-  elif a == c:
+  elif a == b or b == c or a == c:
     return 2
   else:
     return 0
 
-# print(pocet_rovnakych(4, 4, 4))
-# print(pocet_rovnakych(1, 5, 7))
-# print(pocet_rovnakych(3, 3, 5))
-# print(pocet_rovnakych(6, 5, 6))
-# print(pocet_rovnakych(3, 5, 5))
+print(pocet_rovnakych(4, 4, 4))
+print(pocet_rovnakych(1, 5, 7))
+print(pocet_rovnakych(3, 3, 5))
+print(pocet_rovnakych(6, 5, 6))
+print(pocet_rovnakych(3, 5, 5))
 
 
 # ----- Uloha 7 -----
@@ -116,14 +114,33 @@ def minimum_zadane(n):
 
 # ----- Uloha 10 -----
 def druhe_najvacsie_zadane(n):
-  cisla = []
+  if n == 1:
+    return int(input("Zadaj cislo: "))
+
+  druhe_najvacsie = None
+  najvacsie = None
+
   for i in range(n):
     cislo = int(input("Zadaj cislo: "))
-    cisla.append(cislo)
-  cisla.sort()
-  return cisla[n - 2]
+    if najvacsie:
+      if cislo > najvacsie:
+        druhe_najvacsie = najvacsie
+        najvacsie = cislo
+    else:
+      najvacsie = cislo
+  return druhe_najvacsie 
 
-# print(druhe_najvacsie_zadane(5))
+
+# # Cheat verzia
+# def druhe_najvacsie_zadane(n):
+#   cisla = []
+#   for i in range(n):
+#     cislo = int(input("Zadaj cislo: "))
+#     cisla.append(cislo)
+#   cisla.sort()
+#   return cisla[n - 2]
+
+print(druhe_najvacsie_zadane(5))
 
 
 # ----- Uloha 11 -----
@@ -281,8 +298,8 @@ def pohyb_jazdca(x1, y1, x2, y2):
   return False
 
 
-print(pohyb_jazdca(1, 1, 1, 4))
-print(pohyb_jazdca(1, 1, 8, 8))
-print(pohyb_jazdca(2, 4, 3, 2))
-print(pohyb_jazdca(5, 2, 4, 4))
-print(pohyb_jazdca(2, 8, 3, 7))
+# print(pohyb_jazdca(1, 1, 1, 4))
+# print(pohyb_jazdca(1, 1, 8, 8))
+# print(pohyb_jazdca(2, 4, 3, 2))
+# print(pohyb_jazdca(5, 2, 4, 4))
+# print(pohyb_jazdca(2, 8, 3, 7))
