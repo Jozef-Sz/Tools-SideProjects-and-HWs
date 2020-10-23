@@ -33,7 +33,7 @@ Disclaimer, the last statement about memory is in the users responsibility to ha
 ```c
 string str(const char* arg)
 ```
-Is used for crating strings, which represents and manipulates a sequence of characters.
+Is used for creating string "object", which represents and can manipulate a sequence of characters.
 * **arg** - any kind of text, which is turned into string type and then returned
 
 ```C
@@ -266,7 +266,7 @@ int main()
     return 0;
 }
 ```
-#### Expected outpu:
+#### Expected output:
 What is your name: Frank<br/>
 Nice to meet you Frank. I am James Johnson.<br/>
 How old are you: 25<br/>
@@ -276,7 +276,9 @@ So today we're going to visit the Statue of Liberty.
 ## For user's of strlib
 In case you intend to use strlib in your project, you will have to:
 
-a) Clone or download as zip this repository and include strlib.h and strlib.c from the src folder to your project.
+a) Clone or download as zip this repository and copy strlib.h and strlib.c from the src folder to your project.
+
+or
 
 b) Create two files in your project, one named strlib.h and one strlib.c, then copy code from coresponding files on github, which are in the src folder. 
 
@@ -302,4 +304,4 @@ To contribute to strlib you will need GNU Make, it's not necessary, but recommen
 4. Create a pull request, which I thank you in advance :wink: :smiley:
 
 ### NOTES:
-If you find any bug or mistake in the library's code, please make an issue labeled with the strlib label. 
+If you find any bugs or mistakes in the library's code or docs, please make an issue labeled with the strlib label. Or even better a pull request. :wink: 
