@@ -123,9 +123,14 @@ def druhe_najvacsie_zadane(n):
   for i in range(n):
     cislo = int(input("Zadaj cislo: "))
     if najvacsie:
-      if cislo > najvacsie:
-        druhe_najvacsie = najvacsie
-        najvacsie = cislo
+      if druhe_najvacsie:
+        if cislo > najvacsie:
+          druhe_najvacsie = najvacsie
+          najvacsie = cislo
+        if cislo > druhe_najvacsie:
+          druhe_najvacsie = cislo
+      else:
+        druhe_najvacsie = cislo
     else:
       najvacsie = cislo
   return druhe_najvacsie 
@@ -140,7 +145,7 @@ def druhe_najvacsie_zadane(n):
 #   cisla.sort()
 #   return cisla[n - 2]
 
-print(druhe_najvacsie_zadane(5))
+print(druhe_najvacsie_zadane(3))
 
 
 # ----- Uloha 11 -----
