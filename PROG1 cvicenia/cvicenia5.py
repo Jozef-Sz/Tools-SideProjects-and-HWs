@@ -51,12 +51,12 @@ def je_sucet_parny(n):
     return True if a % 2 == 0 else False
 
   parita_b = je_sucet_parny(n - 1)
-  if not(a % 2 == 0 != parita_b):
+  if not((a % 2 == 0) != parita_b):
     return True
   return False
 
 
-# print(je_sucet_parny(3))
+print(je_sucet_parny(3))
 
 
 # ------- Uloha 6 -------
@@ -170,16 +170,16 @@ def snowflake(t, length):
     t.rt(120)
   
 # ------------------------
-bob = turtle.Turtle()
+# bob = turtle.Turtle()
 
-bob.speed(0)
+# bob.speed(0)
 
-bob.pu()
-bob.setpos(-350, 200)
-bob.pd()
+# bob.pu()
+# bob.setpos(-350, 200)
+# bob.pd()
 
-# koch(bob, 700)
-snowflake(bob, 700)
+# # koch(bob, 700)
+# snowflake(bob, 700)
 
-turtle.done()
+# turtle.done()
 # ------------------------

@@ -100,20 +100,125 @@ def najvacsie_x(n):
 def poradie_najvacsieho():
   poradie = 1
   poradie_najv = 1
-  najvacie = None
+  najvacsie = int(input("Zadaj cislo: "))
   while True:
     cislo = int(input("Zadaj cislo: "))
-    if najvacie:
-      if cislo > najvacie:
-        najvacie = cislo
-        poradie_najv = poradie
-    else:
-      najvacie = cislo
+    poradie += 1
+    if cislo > najvacsie:
+      najvacsie = cislo
+      poradie_najv = poradie
     if cislo == 0:
       return poradie_najv
-    poradie += 1
 
 # print(poradie_najvacsieho())
 
 
 # -------- Uloha 5 --------
+def pocet_vacsich():
+  pocet = 0
+  predosle = int(input("Zadaj cislo: "))
+  while True:
+    cislo = int(input("Zadaj cislo: "))
+    if cislo > predosle:
+      pocet += 1
+    if cislo == 0:
+      return pocet
+    predosle = cislo
+
+# print(pocet_vacsich())
+
+
+# -------- Uloha 6 --------
+def pocet_rovnych_najv():
+  najvacsie = int(input("Zadaj cislo: "))
+  pocet_rov = 0
+  while True:
+    cislo = int(input("Zadaj cislo: "))
+    if cislo > najvacsie:
+      najvacsie = cislo
+      pocet_rov = 0
+    if cislo == najvacsie:
+      pocet_rov += 1
+    if cislo == 0:
+      return pocet_rov
+
+# print(pocet_rovnych_najv())
+
+
+# -------- Uloha 7 --------
+def dlzka_podpostupnosti():
+  dlzka = 1
+  cislo = None
+  najdlhsia_dlzka = 1
+  predosle_cislo = int(input("Zadaj cislo: "))
+  while cislo != 0:
+    cislo = int(input("Zadaj cislo: "))
+    if cislo == predosle_cislo:
+      dlzka += 1
+    else:
+      if dlzka > najdlhsia_dlzka:
+        najdlhsia_dlzka = dlzka
+        dlzka = 1
+    predosle_cislo = cislo
+  return najdlhsia_dlzka
+
+# print(dlzka_podpostupnosti())
+
+
+# -------- Uloha 7 --------
+cache = {}
+
+def fibonacci(n):
+  if n in cache:
+    return cache[n]
+  if n == 0:
+    value = 0
+  elif n == 1:
+    value = 1
+  else:
+    value = fibonacci(n - 1) + fibonacci(n - 2)
+  cache[n] = value
+  return value
+
+
+# Brute Force Method
+def fibonacci_index(x):
+  index = 0
+  while True:
+    fib_cislo = fibonacci(index)
+    if fib_cislo == x:
+      return index
+    elif fib_cislo < x:
+      index += 1
+    else:
+      return -1
+
+# Mathematical Method
+def fibonacci_index_b(x):
+  if x <= 0:
+    return n
+  if x == 1:
+    return (1, 2)
+  if x == 2:
+    pass
+
+
+
+import math 
+def findIndexOf(n) : 
+    fibo = 2.078087 * math.log(n) + 1.672276
+   
+    # returning rounded off value of index 
+    return round(fibo, 1)
+
+
+for i in range(1, 101):
+  print(i, findIndexOf(i))
+
+
+# print(fibonacci_index(2))
+# print(fibonacci_index(3))
+# print(fibonacci_index(4))
+# print(fibonacci_index(5))
+# print(fibonacci_index(3423))
+# print(fibonacci_index(233))
