@@ -67,11 +67,11 @@ def pocet_rovnakych(a, b, c):
   else:
     return 0
 
-print(pocet_rovnakych(4, 4, 4))
-print(pocet_rovnakych(1, 5, 7))
-print(pocet_rovnakych(3, 3, 5))
-print(pocet_rovnakych(6, 5, 6))
-print(pocet_rovnakych(3, 5, 5))
+# print(pocet_rovnakych(4, 4, 4))
+# print(pocet_rovnakych(1, 5, 7))
+# print(pocet_rovnakych(3, 3, 5))
+# print(pocet_rovnakych(6, 5, 6))
+# print(pocet_rovnakych(3, 5, 5))
 
 
 # ----- Uloha 7 -----
@@ -123,14 +123,15 @@ def druhe_najvacsie_zadane(n):
   for i in range(n):
     cislo = int(input("Zadaj cislo: "))
     if najvacsie:
-      if druhe_najvacsie:
-        if cislo > najvacsie:
-          druhe_najvacsie = najvacsie
-          najvacsie = cislo
-        if cislo > druhe_najvacsie:
-          druhe_najvacsie = cislo
+      if najvacsie < cislo:
+        druhe_najvacsie = najvacsie
+        najvacsie = cislo
       else:
-        druhe_najvacsie = cislo
+        if druhe_najvacsie:
+          if druhe_najvacsie < cislo:
+            druhe_najvacsie = cislo
+        else:
+          druhe_najvacsie = cislo
     else:
       najvacsie = cislo
   return druhe_najvacsie 

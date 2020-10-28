@@ -165,7 +165,7 @@ def dlzka_podpostupnosti():
 # print(dlzka_podpostupnosti())
 
 
-# -------- Uloha 7 --------
+# -------- Uloha 8 --------
 cache = {}
 
 def fibonacci(n):
@@ -193,32 +193,31 @@ def fibonacci_index(x):
     else:
       return -1
 
+from math import sqrt, log
+
 # Mathematical Method
 def fibonacci_index_b(x):
-  if x <= 0:
-    return n
-  if x == 1:
-    return (1, 2)
-  if x == 2:
-    pass
+  a = 5 * x**2 + 4
+  b = 5 * x**2 - 4
+  a_sr = int(sqrt(a))
+  b_sr = int(sqrt(b))
+  if (a_sr * a_sr == a) or (b_sr * b_sr == b):
+    fib_index = 2.078087 * log(x) + 1.672276
+    return round(fib_index)
+  else:
+    return -1
 
-
-
-import math 
-def findIndexOf(n) : 
-    fibo = 2.078087 * math.log(n) + 1.672276
-   
-    # returning rounded off value of index 
-    return round(fibo, 1)
-
-
-for i in range(1, 101):
-  print(i, findIndexOf(i))
-
-
-# print(fibonacci_index(2))
-# print(fibonacci_index(3))
 # print(fibonacci_index(4))
-# print(fibonacci_index(5))
-# print(fibonacci_index(3423))
-# print(fibonacci_index(233))
+# print(fibonacci_index(8))
+# print(fibonacci_index(2))
+# print(fibonacci_index(9))
+
+
+# -------- Uloha 9 --------
+# from math import sqrt
+def mysqrt(a):
+  pass
+
+
+def test_square_root(range):
+  
