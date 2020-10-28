@@ -72,13 +72,13 @@ def stvorce_do(n):
 
 
 # -------- Uloha 3 --------
-def pow(base, exp):
-  result = base
-  counter = exp
-  while counter > 1:
-    result *= base
-    counter -= 1
-  return result
+# def pow(base, exp):
+#   result = base
+#   counter = exp
+#   while counter > 1:
+#     result *= base
+#     counter -= 1
+#   return result
 
 # Feel free to just import pow from math, but 
 # probably the function above is expected XD
@@ -215,9 +215,68 @@ def fibonacci_index_b(x):
 
 # -------- Uloha 9 --------
 # from math import sqrt
+from random import uniform
+
 def mysqrt(a):
-  pass
+  if a < 0:
+    raise ValueError("Cannot square root negative number.")
+  if a == 0:
+    return 0.0
+  if a == 1:
+    return 1.0
+  x = round(uniform(1, a-1), 4)
+  tolerancia = 0.000001
+  odchylka = tolerancia + 1
+  while abs(odchylka) > tolerancia:
+    x = (x + a / x) / 2
+    odchylka = a - x**2
+  return x
 
 
-def test_square_root(range):
-  
+def test_square_root(do):
+  print(" a   mysqrt(a) \t math.sqrt(a) \t diff")
+  print(" -   --------- \t ------------\t----------------------")
+  for a in range(1, do+1):
+    my_fn = mysqrt(a)
+    builtin_fn = sqrt(a)
+    diff = round(my_fn, 11) - round(builtin_fn, 11)
+    print("{: > 1}  {: >10}\t{: >10}\t{: >20}".format(a, round(my_fn, 8), round(builtin_fn, 8), diff))
+
+
+# test_square_root(19)
+
+
+# -------- Uloha 10 --------
+def eval_loop():
+  vysledok = None
+  vyraz = str(input("Zadaj vyraz: "))
+  while vyraz != "done":
+    try:
+      vysledok = eval(vyraz)
+    except Exception:
+      print("Chybny vyraz")
+      return vysledok
+    vyraz = str(input("Zadaj vyraz: "))
+  return vysledok
+
+
+# print("Vratena hodnota:", eval_loop())
+
+
+# -------- Uloha 11 --------
+from math import factorial#, sqrt
+
+def estimate_pi():
+  konst = 2 * sqrt(2) / 9801
+  k = 0
+  vysledok = 0
+  while True:
+    citatel = factorial(4*k) * (1103 + 26390*k) 
+    menovatel = factorial(k)**4 * 396**(4*k) 
+    suma = citatel / menovatel
+    vysledok += suma
+    if suma < 10e-15:
+      return 1 / (vysledok * konst)
+    k += 1
+
+print(estimate_pi())
