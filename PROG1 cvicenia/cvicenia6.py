@@ -253,6 +253,7 @@ def eval_loop():
   while vyraz != "done":
     try:
       vysledok = eval(vyraz)
+      print(vysledok)
     except Exception:
       print("Chybny vyraz")
       return vysledok
