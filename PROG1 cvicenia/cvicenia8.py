@@ -42,13 +42,13 @@
 #                 pismeno vracia hodnotu True. Tato funkcia nesplna cielove podmienky.
 
 # Exercise 8.5
-# def rotate_word(word, amount):
-#   # One-liner
-#   # return "".join([chr(ord(l) + amount) for l in word])
-#   nw = ''
-#   for l in word:
-#     nw += chr(ord(l) + amount)
-#   return nw
+def rotate_word(word, amount):
+  # One-liner
+  # return "".join([chr(ord(l) + amount) for l in word])
+  nw = ''
+  for l in word:
+    nw += chr(ord(l) + amount)
+  return nw
 
 # print(rotate_word('HAL', 1))
 
@@ -68,8 +68,8 @@
 
 
 # Exercise 9.2
-# def has_no_e(word):
-#   return word.count('e') == 0
+def has_no_e(word):
+  return word.count('e') == 0
 
 # total_words = 0
 # word_without_e = 0
@@ -93,63 +93,104 @@ def avoids(word, forbidden_letters):
   return True
 
 
-forbidden_letters_input = str(input("Zadaj zakazane pismena: "))
+# forbidden_letters_input = str(input("Zadaj zakazane pismena: "))
 
-word_num = 0
-with open('words.txt', 'r') as words:
-  for line in words:
-    word = line.strip()
-    if avoids(word, forbidden_letters_input):
-      word_num += 1
+# word_num = 0
+# with open('words.txt', 'r') as words:
+#   for line in words:
+#     word = line.strip()
+#     if avoids(word, forbidden_letters_input):
+#       word_num += 1
 
-print(word_num)
+# print(word_num)
 
-# Extra challenge part of exercise
-english_abc = "abcdefghijklmnopqrstuvwxyz"
+# # Extra challenge part of exercise
+# english_abc = "abcdefghijklmnopqrstuvwxyz"
 
-from itertools import combinations
+# from itertools import combinations
 
-# Load words to the memory
-text_file_buffer = []
-with open('words.txt', 'r') as words:
-  for line in words:
-    word = line.strip()
-    text_file_buffer.append(word)
+# # Load words to the memory
+# text_file_buffer = []
+# with open('words.txt', 'r') as words:
+#   for line in words:
+#     word = line.strip()
+#     text_file_buffer.append(word)
 
-# Optimising english_abc
-letters = {}
+# # Optimising english_abc
+# letters = {}
 
-for w in text_file_buffer:
-  for letter in w:
-    if letter in letters:
-      letters[letter] += 1
+# for w in text_file_buffer:
+#   for letter in w:
+#     if letter in letters:
+#       letters[letter] += 1
+#     else:
+#       letters[letter] = 1
+
+# letters = {k: v for k, v in sorted(letters.items(), key=lambda item: item[1], reverse=True)}
+# letters = [x[0] for x in list(letters.items())[:18]]
+# english_abc = ''.join([str(i) for i in english_abc if i not in letters])
+# print(f"Pouzite pismena: {english_abc}")
+
+
+# # Brute force search
+# total_number_of_words = len(text_file_buffer)
+# forbidden_letters = 5
+# least_excluding_combination = None
+# highest_percentage = None
+
+# for combination in combinations(english_abc, forbidden_letters):
+#   allowed_words_count = 0
+#   for word in text_file_buffer:
+#     if avoids(word, combination):
+#       allowed_words_count += 1
+#   percentage = allowed_words_count / total_number_of_words * 100
+#   if highest_percentage and least_excluding_combination:
+#     if percentage > highest_percentage:
+#       highest_percentage = percentage
+#       least_excluding_combination = combination
+#   else:
+#     least_excluding_combination = combination
+#     highest_percentage = percentage
+
+# print(f"Kombinacia pismen: {least_excluding_combination}, \nNevyradene slova: {highest_percentage : .3f}%")
+
+
+# Exercise 9.4
+def uses_only(word, letters):
+  for l in word:
+    if l not in letters:
+      return False
+  return True
+
+# Exercise 9.5
+def uses_all(word, letters):
+  for l in letters:
+    if l not in word:
+      return False
+  return True
+
+# Exercise 9.6
+def is_abecedarian(word):
+  for i in range(len(word) - 1):
+    if word[i] > word[i+1]:
+      return False
+  return True
+ 
+# ----------- Cast tretia ----------------
+# Exercise 9.7
+def car_talk1(word):
+  count = 0
+  index = 1
+  previous = word[0]
+  while index < len(word):
+    if previous == word[index]:
+      count += 1
+      index += 2
+      previous = word[index-1] if index < len(word) else previous
     else:
-      letters[letter] = 1
-
-letters = {k: v for k, v in sorted(letters.items(), key=lambda item: item[1], reverse=True)}
-letters = [x[0] for x in list(letters.items())[:18]]
-english_abc = ''.join([str(i) for i in english_abc if i not in letters])
-print(f"Pouzite pismena: {english_abc}")
-
-
-# Brute force search
-total_number_of_words = len(text_file_buffer)
-forbidden_letters = 5
-least_excluding_combination = None
-highest_percentage = None
-
-for combination in combinations(english_abc, forbidden_letters):
-  allowed_words_count = 0
-  for word in text_file_buffer:
-    if avoids(word, combination):
-      allowed_words_count += 1
-  percentage = allowed_words_count / total_number_of_words * 100
-  if highest_percentage and least_excluding_combination:
-    if percentage > highest_percentage:
-      highest_percentage = percentage
-      least_excluding_combination = combination
-  else:
-    least_excluding_combination = combination
-    highest_percentage = percentage
-
-print(f"Kombinacia pismen: {least_excluding_combination}, \nNevyradene slova: {highest_percentage : .3f}%")
+      count = 0
+      previous = word[index]
+      index += 1
+    if count == 3:
+      return True
+  return False
