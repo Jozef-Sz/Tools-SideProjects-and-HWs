@@ -194,3 +194,34 @@ def car_talk1(word):
     if count == 3:
       return True
   return False
+
+# Exercise 9.8
+is_palindrome = lambda word, start, stop: word[start:stop] == word[start:stop][::-1]
+
+def is_solution(number):
+  return (
+    is_palindrome(str(number).zfill(6), 2, 6) and
+    is_palindrome(str(number+1).zfill(6), 1, 6) and
+    is_palindrome(str(number+2).zfill(6), 1, 5) and
+    is_palindrome(str(number+3).zfill(6), 0, 6)
+  )
+
+def car_talk2():
+  for number in range(1000000):
+    if is_solution(number):
+      print(str(number).zfill(6))
+
+# car_talk2()
+
+# Exercise 9.9
+def car_talk3():
+  mom = 36
+  son = 0
+  mom_max_age = 100
+  for year in range(mom_max_age - mom):
+    if str(mom) == str(son).zfill(2)[::-1]:
+      print(f"Mom: {mom}, son: {son}")
+    mom += 1
+    son += 1
+
+car_talk3()
