@@ -27,7 +27,6 @@ def middle(lst):
 
 # print(middle([1, 2, 3, 4]))
 
-
 # ---------- Uloha 2 ----------
 # Exercise 10.5
 def is_sorted(a):
@@ -64,4 +63,45 @@ def ulohastyri(lst):
 
 
 # ---------- Uloha 5 ----------
+def pocet_roznych_prvkov(lst):
+  return len(set(lst))
+  
+# print(pocet_roznych_prvkov([1, 2, 2, 4, 5, 4]))    # 4
+# print(pocet_roznych_prvkov([5, 5]))                # 1
+# print(pocet_roznych_prvkov([5, 5, 1, 12, 12, 12])) # 3
 
+
+# ---------- Uloha 6 ----------
+def unique_items_count(lst):
+  work_lst = lst.copy()
+  lst_set = set(lst)
+  for elm in lst_set:
+    work_lst.remove(elm)
+  unique_elements = list(filter(lambda x: x not in work_lst, lst))
+  return len(unique_elements)
+
+def unique_items_count2(lst):
+  pocet = 0
+  for elm in lst:
+    if lst.count(elm) == 1:
+      pocet += 1
+  return pocet
+
+# arr = [1, 2, 2, 3, 3]
+# print(unique_items_count2(arr))
+
+
+# ---------- Uloha 7 ----------
+# Exercise 10.6
+def is_anagram(a_word, b_word):
+  a = [s for s in a_word]
+  b = [s for s in b_word]
+  if sorted(a) == sorted(b):
+    return True
+  return False
+  
+
+print(is_anagram("elet", "etel")) # True
+print(is_anagram("satu", "utas")) # True
+print(is_anagram("abcd", "efgh")) # False
+print(is_anagram("coca", "cola")) # False
