@@ -12,20 +12,23 @@ def nested_sum(n_list):
 # Exercise 10.2
 def cumsum(lst):
   new_lst = []
-  for i, n in enumerate(lst):
-    p_sum = 0
-    for j in range(i + 1):
-      p_sum += lst[j]
-    new_lst.append(p_sum)
+  for i in range(len(lst)):
+    new_lst.append(sum(lst[:i+1]))
   return new_lst
 
-# print(cumsum([1, 2, 3]))
+# print(cumsum([1, 2, 3])) # [1, 3, 6]
 
 # Exercise 10.3
 def middle(lst):
   return lst[1:len(lst)-1]
 
-# print(middle([1, 2, 3, 4]))
+# def middle(lst):
+#   return [n for i, n in enumerate(lst) if (i != 0) and (i != len(lst)-1) ]
+
+# a = [1, 2, 3, 4, 12]
+# print(a)
+# print(middle(a))
+# print(a)
 
 # ---------- Uloha 2 ----------
 # Exercise 10.5
@@ -39,13 +42,18 @@ def is_sorted(a):
 
 
 # ----------- Uloha 3 ----------
+# def sum_even_index(lst):
+#   sum = 0
+#   for n in lst[::2]:
+#     sum += n
+#   return sum
+
 def sum_even_index(lst):
-  sum = 0
-  for n in lst[::2]:
-    sum += n
-  return sum
+  evens = [n for i, n in enumerate(lst) if i % 2 == 0]
+  return sum(evens)
 
 # print(sum_even_index([3, 6, 4, 6, 2]))
+# print(sum_even_index([1, 6, 1, 6, 1]))
 
 
 # ---------- Uloha 4 ----------
@@ -59,7 +67,6 @@ def ulohastyri(lst):
   return pocet
 
 # print(ulohastyri([1, 5, 2, 12, 8, 9]))
-# print(ulohastyri([1, 5, 6, 12, 8, 9]))
 
 
 # ---------- Uloha 5 ----------
@@ -87,21 +94,20 @@ def unique_items_count2(lst):
       pocet += 1
   return pocet
 
-# arr = [1, 2, 2, 3, 3]
+# arr = [1, 2, 2, 3, 15, 15]
 # print(unique_items_count2(arr))
 
 
 # ---------- Uloha 7 ----------
 # Exercise 10.6
 def is_anagram(a_word, b_word):
-  a = [s for s in a_word]
-  b = [s for s in b_word]
-  if sorted(a) == sorted(b):
+  if sorted(list(a_word)) == sorted(list(b_word)):
     return True
   return False
   
 
 print(is_anagram("elet", "etel")) # True
+print(is_anagram("forty five", "over fifty")) # True
 print(is_anagram("satu", "utas")) # True
 print(is_anagram("abcd", "efgh")) # False
 print(is_anagram("coca", "cola")) # False
