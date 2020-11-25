@@ -124,8 +124,29 @@ def has_duplicates(lst):
 
 
 # ------- Exercise 10.8 -------
+from random import randint, choice
+
 def birthday_paradox(subjects, iterations=100):
-  pass
+  coincidence_count = 0
+  for i in range(iterations):
+    sample = [get_bday() for _ in range(subjects)]
+    is_same_date = len(sample) != len(set(sample))
+    if is_same_date:
+      coincidence_count += 1
+  return coincidence_count / iterations
+
+def get_bday():
+  day, month = None, randint(1, 12)
+  if month in (1, 3, 5, 7, 8, 10, 12):
+    day = randint(1, 31)
+  elif month == 2:
+    day = randint(1, choice([28, 28, 28, 29]))
+  else:
+    day = randint(1, 30)
+  return (day, month)
+
+pravdepodobnost = birthday_paradox(23, 10000)
+print(f"Pravdepodobnost ludi s rovnakym datumom nar. {pravdepodobnost * 100}%")
 
 
 # ------- Exercise 10.9 -------
@@ -162,24 +183,74 @@ def versiontwo():
 
 # ------- Exercise 10.10 -------
 def in_bisect(lst, target):
-  pass
+  left, right = 0, len(lst)-1
+  while left <= right:
+    mid = (left + right) // 2
+    if lst[mid] < target:
+      left = mid + 1
+    elif lst[mid] > target:
+      right = mid - 1
+    else:
+      return True
+  return False
 
-words = []
-with open("words.txt", "r") as txt:
-  for line in txt:
-    word = line.strip()
-    words.append(word)
+# words = []
+# with open("words.txt", "r") as txt:
+#   for line in txt:
+#     word = line.strip()
+#     words.append(word)
 
-print(in_bisect(words, "believes"))  # True
-print(in_bisect(words, "Saitama"))   # False
-print(in_bisect(words, "proxy"))  # True
-print(in_bisect(words, "Puri-Puri Prisoner")) # False
+# print(in_bisect(words, "believes"))  # True
+# print(in_bisect(words, "Saitama"))   # False
+# print(in_bisect(words, "proxy"))  # True
+# print(in_bisect(words, "Puri-Puri Prisoner")) # False
 
 
 # ------- Exercise 10.11 -------
+def is_reversepair(a, b):
+  return a == b[::-1]
 
+# words = []
+# with open("words.txt", "r") as txt:
+#   for line in txt:
+#     words.append(line.strip())
+# 
+# print("Vsetky reverse pair:")
+# 
+# # Wrong example
+# # for i in range(len(words)):
+# #   for j in range(i+1, len(words)):
+# #     if is_reversepair(words[i], words[j]):
+# #       print(f"  pair: {words[i]}, {words[j]}")
+# 
+# for word in words:
+#   if in_bisect(words, word[::-1]):
+#     print(f"  pair: {word}, {word[::-1]}")
+# 
+# # Malo by byt 885 takych parov vo words.txt
 
 
 # ------- Exercise 10.12 -------
+def is_interlock(words, il_word):
+  return (in_bisect(words, il_word[::2]) and
+          in_bisect(words, il_word[1::2]))
 
+def is_triple_interlock(words, il_word):
+  return (in_bisect(words, il_word[::3]) and
+          in_bisect(words, il_word[1::3]) and
+          in_bisect(words, il_word[2::3]))
 
+# words = []
+# with open("words.txt", "r") as txt:
+#   for line in txt:
+#     words.append(line.strip())
+# 
+# print("Kazdy interlock z words.txt:")
+# for word in words:
+#   if is_interlock(words, word):
+#     print(f"  {word} je interlock {word[::2]} a {word[1::2]}")
+#     
+# print("Kazdy trojnasobny interlock:")
+# for word in words:
+#   if is_triple_interlock(words, word):
+#     print(f"  {word} je interlock {word[::3]}, {word[1::3]} a {word[2::3]}")
