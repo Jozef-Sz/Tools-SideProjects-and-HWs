@@ -1,8 +1,7 @@
 # ---------- Uloha 1 ----------
 def najcastejsie():
   zadane_cisla = []
-  cislo = int(input("Zadaj cislo: "))
-  zadane_cisla.append(cislo)
+  cislo = None
   najcastejsie = cislo
   while cislo != 0:
     cislo = int(input("Zadaj cislo: "))
@@ -11,7 +10,7 @@ def najcastejsie():
       najcastejsie = cislo
   return najcastejsie
 
-# print(najcastejsie())
+print(najcastejsie())
 
 
 # ---------- Uloha 2 ----------
