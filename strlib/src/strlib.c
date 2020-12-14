@@ -238,7 +238,7 @@ char charat(string arg, int index)
 
 char strpop(string arg)
 {
-    if (arg->length == 0) return NULL;
+    if (arg->length == 0) return -1;
     char poped = arg->str[arg->length - 1];
     arg->str[arg->length - 1] = '\0';
     arg->length--;
